@@ -1,0 +1,1 @@
+web: gunicorn bandmap.wsgi --log-file -

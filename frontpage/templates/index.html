@@ -1,0 +1,46 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static '/css/materialize.css' %}">
+    <link rel="stylesheet" href="{% static '/css/styles.css' %}">
+    <title>BandMap</title>
+</head>
+<body>
+
+    <nav id='topnav' style='background-color: black;'>
+        <div class='nav-wraper'>
+            <ul id='nav-mobile' class='right'>
+                <li style='padding-right: 25px;'>
+                    <a class='btn waves-effect indigo accent-2' style='display: none;' id='spotify'>
+                    Make Playlist <img src={% static 'img/Spotify_Icon_RGB_White.png' %} style='max-width: 20px;'>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div id='sideFeats' class='sidebar'>
+        <ul id='artists' class='primary'>
+        </ul>
+    </div>
+
+    <div id='map-container'></div>
+
+    {% csrf_token %}
+    {{location|json_script:'loc'}}
+    {{geo|json_script:'geojson'}}
+    {{sp_token|json_script:'sp_token'}}
+    {{mapbox|json_script:'token'}}
+
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet' />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+    <script src="{% static '/js/map.js' %}"></script>
+
+</body>
+</html>
