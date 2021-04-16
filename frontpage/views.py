@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.views import View
 from .models import SessionMap
-from spotify.models import SpotifyToken
+# from spotify.models import SpotifyToken
 from geopy.geocoders import Nominatim
 
 
@@ -47,7 +47,7 @@ class MapView(View):
             else:
                 location = {'latitude': user[0].latitude, 'longitude': user[0].longitude}
 
-        sp_token = SpotifyToken.objects.filter(session_user=self.request.session.session_key)
+        # sp_token = SpotifyToken.objects.filter(session_user=self.request.session.session_key)
         # get location
         if user[0].latitude != None:
             geolocator = Nominatim(user_agent='Bandmap')
@@ -60,18 +60,18 @@ class MapView(View):
             local_artists = coll.find({'latitude':{'$exists':True},'location':{'$regex':f'({region.lower()})'}})
             user_map = MapMaker(local_artists)
             points = user_map.point_properties()
-            if sp_token.exists():
-                context = {
-                    'geo': user_map.make_geo_json(points),
-                    'location': location,
-                    'sp_token': {'sp_token': sp_token[0].access_token},
-                    'mapbox': {'token': os.environ['MAPBOX_TOKEN']}
-                }
+            # if sp_token.exists():
+            context = {
+                'geo': user_map.make_geo_json(points),
+                'location': location,
+                # 'sp_token': {'sp_token': sp_token[0].access_token},
+                'mapbox': {'token': os.environ['MAPBOX_TOKEN']}
+            }
         else:
             context = {
                 'geo': None,
                 'location': location,
-                'sp_token': None,
+                # 'sp_token': None,
                 'mapbox': {'token': os.environ['MAPBOX_TOKEN']}
             }
         return render(self.request, self.template_name, context=context)

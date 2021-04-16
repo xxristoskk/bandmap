@@ -40,7 +40,7 @@ function saveLocation(position) {
     });
 };
 
-if (currentLocation === undefined) {
+if (currentLocation.latitude == undefined || currentLocation.longitude == null) {
   getLocation();
 }
 
@@ -123,25 +123,6 @@ map.on('style.load', function() {
 
     let selectedFeat = e.features[0];
     var artists = JSON.parse(selectedFeat.properties.artists);
-
-    document.getElementById('spotify').onclick = function() {
-      if (spotify_token === undefined) {
-        authSpotify()
-      } else {
-        const csrftoken = document.querySelector('meta[name=csrf-token]').getAttribute('content');
-        console.log(csrftoken)
-        $.post({
-          url: 'spotify/make_playlist/',
-          data: {
-            selectedArtists: artists,
-            city: $(selectedFeat.properties.city),
-            csrfmiddlewaretoken: csrftoken
-          },
-          contentType: false,
-          processData: false
-        })
-      }
-    }
 
     artist_html = `
     <div class='row'>
