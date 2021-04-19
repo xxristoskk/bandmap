@@ -12,6 +12,12 @@
 </head>
 <body>
 
+    {% csrf_token %}
+    {{location|json_script:'loc'}}
+    {{geo|json_script:'geojson'}}
+    {{sp_token|json_script:'sp_token'}}
+    {{mapbox|json_script:'token'}}
+    
     <nav id='topnav' style='background-color: black;'>
         <div class='nav-wraper'>
             <ul id='nav-mobile' class='right'>
@@ -30,12 +36,6 @@
     </div>
 
     <div id='map-container'></div>
-
-    {% csrf_token %}
-    {{location|json_script:'loc'}}
-    {{geo|json_script:'geojson'}}
-    {{sp_token|json_script:'sp_token'}}
-    {{mapbox|json_script:'token'}}
 
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet' />

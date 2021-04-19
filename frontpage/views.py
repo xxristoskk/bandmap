@@ -5,9 +5,9 @@ from .models import SessionMap
 from geopy.geocoders import Nominatim
 
 
-# from rest_framework.response import Response
-# from rest_framework import status
-# from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.views import APIView
 
 from frontpage.map_maker import MapMaker
 
@@ -20,17 +20,22 @@ client = pymongo.MongoClient(f'mongodb+srv://{mongodb_user}:{mongodb_pw}@bc01-mu
 db = client.BC02
 coll = db.artistInfo
 
-class MapView(View):
-    template_name = 'index.html'
+class SaveLocation(View):
     model = SessionMap
-
     def post(self, *args, **kwargs):
-        if self.request.is_ajax() and self.request.method == 'POST':
+        if self.request.is_ajax():
+            print(self.request.POST.get('latitude') + "This works")
+            print(self.request.session.session_key)
             user = self.model.objects.filter(session_user=self.request.session.session_key)[0]
+            print(user)
             user.latitude = self.request.POST.get('latitude')
             user.longitude = self.request.POST.get('longitude')
             user.save(update_fields=['latitude','longitude'])
-            return HttpResponse('')
+        return HttpResponseRedirect('/')
+
+class MapView(View):
+    template_name = 'index.html'
+    model = SessionMap
     
     def get(self, *args, **kwargs):
         # create session_key if not made
@@ -38,17 +43,14 @@ class MapView(View):
             self.request.session.create()
             self.model(session_user=self.request.session.session_key).save()
             user = self.model.objects.filter(session_user=self.request.session.session_key)
-            location = {'latitude': user[0].latitude, 'longitude': user[0].longitude}
         else:
             user = self.model.objects.filter(session_user=self.request.session.session_key)
             if not user.exists():
                 self.model(session_user=self.request.session.session_key).save()
-                location = {'latitude': user[0].latitude, 'longitude': user[0].longitude}
-            else:
-                location = {'latitude': user[0].latitude, 'longitude': user[0].longitude}
+        
+        ## find location
+        location = {'latitude': user[0].latitude, 'longitude': user[0].longitude}
 
-        # sp_token = SpotifyToken.objects.filter(session_user=self.request.session.session_key)
-        # get location
         if user[0].latitude != None:
             geolocator = Nominatim(user_agent='Bandmap')
             loc_lookup = geolocator.reverse(f"{user[0].latitude},{user[0].longitude}")
@@ -75,4 +77,3 @@ class MapView(View):
                 'mapbox': {'token': os.environ['MAPBOX_TOKEN']}
             }
         return render(self.request, self.template_name, context=context)
-

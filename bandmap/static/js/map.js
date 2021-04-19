@@ -1,63 +1,60 @@
-currentLocation = JSON.parse(document.getElementById('loc').textContent)
-spotify_token = JSON.parse(document.getElementById('sp_token').textContent)
-
 function closeNav() {
-    $('#sideFeats').css('width', '0');
-    $('#map-container').css('left', '0');
-    $('#topnav').css('display','none');
+  $('#sideFeats').css('width', '0');
+  $('#map-container').css('left', '0');
 }
 
-function authSpotify() {
-  fetch('/spotify/auth')
-      .then((response) => response.json())
-      .then((data) => {
-          window.location.replace(data.url)
-      })
-  
-}
+currentLocation = JSON.parse(document.getElementById('loc').textContent);
 
 if (!navigator.geolocation) {
-    console.error(`Your browser doesn't support Geolocation`);
+  console.error(`Your browser doesn't support Geolocation`);
 };
 
 function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(saveLocation);
-    } else {
-        document.querySelector('#message').textContent = "Browser doesn't support Geolocation";
-    }
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(saveLocation);
+} else {
+  document.querySelector('#message').textContent = "Browser doesn't support Geolocation";
+  }
 };
 
 function saveLocation(position) {
-    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    $.post({
-      url: '',
-      data: {
-        longitude: position.coords.longitude,
-        latitude: position.coords.latitude,
-        csrfmiddlewaretoken: csrftoken
-      },
-    });
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  $.post({
+    url: 'save_location/',
+    data: {
+        'longitude': position.coords.longitude,
+        'latitude': position.coords.latitude,
+        'csrfmiddlewaretoken': csrftoken
+    },
+  });
+  setTimeout(function(){location.reload()}, 3000);
 };
 
-if (currentLocation.latitude == undefined || currentLocation.longitude == null) {
-  getLocation();
+console.log(currentLocation)
+
+if (currentLocation.latitude == null) {
+  getLocation()
 }
+
+
 
 mapboxgl.accessToken = JSON.parse(document.getElementById('token').textContent).token;
 var initialZoom = 9;
+var initialCenter = [currentLocation.longitude, currentLocation.latitude]
+console.log(initialCenter)
 
 // create an object to hold the initialization options for a mapboxGL map
 var initOptions = {
   container: 'map-container', // put the map in this container
   style: 'mapbox://styles/mapbox/dark-v10', // use this basemap
-  center: [currentLocation.longitude, currentLocation.latitude], // initial view center
+  center: initialCenter, // initial view center
   zoom: initialZoom, // initial view zoom level (0-18)
 }
 
 // create the new map
 var map = new mapboxgl.Map(initOptions);
 const geojson = JSON.parse(document.getElementById('geojson').textContent);
+
 // add zoom and rotation controls to the map.
 map.addControl(new mapboxgl.NavigationControl());
 
@@ -66,14 +63,11 @@ var circleRadius = ['step',['get','num_of_artists'],7,5,15,8,20,25,25,50,30,150,
 
 // wait for the initial style to Load
 map.on('style.load', function() {
-  
+
   map.addSource('local-map', {
     type: 'geojson',
     data: geojson,
   });
-
-  // let's make sure the source got added by logging the current map state to the console
-  console.log(map.getStyle().sources);
 
   map.addLayer({
     id: 'clusters',
@@ -123,6 +117,36 @@ map.on('style.load', function() {
 
     let selectedFeat = e.features[0];
     var artists = JSON.parse(selectedFeat.properties.artists);
+    console.log(artists)
+
+    sortedArtists = []
+    // sortedGenres = {}
+    // temp = []
+
+    // artists.forEach(function(artist) {
+    //   if (artist.genre in temp && artist.genre != undefined) {
+    //     sortedGenres[artist.genre].push(artist.name)
+    //   } else {
+    //     temp.push(artist.genre)
+    //     sortedGenres[artist.genre] = [artist.name]
+    //   }
+    // })
+
+    // console.log(sortedGenres)
+    console.log(selectedFeat.properties.city)
+    artists.forEach(function(artist) {
+      sortedArtists.push({'name': artist.name, 'genre': artist.genre})
+    })
+
+    $('#createPlaylist').click(function() {
+      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      $.post({
+        url: 'selected_artists/',
+        data: {'artists': sortedArtists, 'city': selectedFeat.properties.city, 'csrfmiddlewaretoken': csrftoken},
+      })
+      console.log(artists)
+    });
+
 
     artist_html = `
     <div class='row'>
@@ -134,7 +158,8 @@ map.on('style.load', function() {
       </div>
     </div>
     <div class='divider'></div><br>`
-    
+
+
     builder = (artist) => {
       artist_html += `
       <div class='row valign-wrapper'>
@@ -152,7 +177,6 @@ map.on('style.load', function() {
     $('#artists').html(artist_html);
     $('#sideFeats').css('width', '300px');
     $('#map-container').css('left', '300px');
-
   });
 
   // listen for the mouse moving over the map and react when the cursor is over our data
@@ -181,8 +205,8 @@ map.on('style.load', function() {
     `;
 
     map.getSource('feature-highlight').setData(selectedFeat);
-    popup.setLngLat(coordinates).setHTML(popup_html).addTo(map);
 
+    popup.setLngLat(coordinates).setHTML(popup_html).addTo(map);
   });
 
   map.on('mouseleave', 'clusters', function () {
@@ -194,5 +218,5 @@ map.on('style.load', function() {
       features: []
     });
   });
-    
+  
 });
