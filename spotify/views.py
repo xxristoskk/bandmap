@@ -15,27 +15,61 @@ from rest_framework.views import APIView
 import spotipy
 from spotipy.cache_handler import CacheHandler
 from spotipy.oauth2 import SpotifyOAuth
+
 import os
+
 client_id = os.environ['SPOTIFY_ID']
 client_secret = os.environ['SPOTIFY_SECRET']
 scope = 'playlist-modify-public'
-redirect_uri = 'http://127.0.0.1:8000/spotify/redirect'
+redirect_uri = 'https://bandmap-v1.herokuapp.com/redirect/'
 
-class PlaylistAPI(APIView):
-    def post(self,request):
-        # selected_artists = self.request.POST.get('selectedArtists')
-        print(request)
-        selected_artists = request.data.selectedArtists
-        city = request.data.city
-        return Response({'artists': selected_artists, 'city': city})
-            
-    def get(self,request):
-        print(request)
-        sp_token = SpotifyToken.objects.filter(session_user=user.session_user)[0].access_token
-        new_playlist = PlaylistMaker(selected_artists, city, sp_token)
-        username,playlist_id = new_playlist.get_user_details()
-        trax = new_playlist.search_spotify()
-        new_playlist.create_playlist(trax,playlist_id,username)
+def validate_tokens(session_user):
+    oauth = SpotifyOAuth(
+        client_id=client_id,
+        client_secret=client_secret,
+        redirect_uri='http://127.0.0.1:8000/redirect/',
+        scope=scope,
+        cache_handler=CustomCacheHandler(session_user),
+        show_dialog=True
+    )
+    ##
+    token_info = SpotifyToken.objects.filter(session_user=session_user)[0]
+    expiration = token_info.expires_in
+    if expiration <= timezone.now():
+        token_info = oauth.refresh_access_token(token_info.refresh_token)
+        token = token_info['access_token']
+        return spotipy.Spotify(auth=token)
+    else:
+        return spotipy.Spotify(auth=token_info.access_token)
+
+class PlaylistMaker(View):
+    def post(self, *args, **kwargs):
+        token = SpotifyToken.objects.filter(session_user=self.request.session.session_key)[0]
+
+        #get the data from POST
+        data = self.request.POST
+        case = []
+        artists = []
+        city = data.dict()['city']
+
+        for k,v in data.items():
+            if k.lower() != 'csrfmiddlewaretoken' and k != 'city':
+                case.append(v)
+        case = list(set(case))
+        print(case)
+        for x in range(0,len(case),2):
+            artists.append({'artist_name':case[x]})
+
+        #get the access token
+        sp = validate_tokens(token.session_user)
+
+        username = sp.current_user()['id']
+        playlist_maker = MakePlaylist(sp_username=username, sp=sp)
+        track_ids = playlist_maker.search_artists(artists)
+        playlist_id = playlist_maker.get_playlist_id(f"{city.title()} BandMap Playlist")
+        playlist_maker.create_playlist(track_ids, playlist_id)
+        del case
+        return redirect('frontpage:map')
 
 # spotipy defaults to storing cached tokens to a cache file
 # this class inherits from the base cache handler so tokens are saved to the profile model

@@ -1,55 +1,85 @@
 import spotipy
+import time
 
-client_id = '33c183396aca4677979061389ebd6a2e'
-client_secret = '97a2762f9fd14ac6ab5a73614abc2538'
-scope = 'playlist-modify-public'
-redirect_uri = 'http://127.0.0.1:8000/spotify/redirect'
+def break_up_albums(album_ids, sp):
+    print(album_ids)
+    trax = []
+    size = len(album_ids)
+    if size <= 20:
+        for album in list(sp.albums(album_ids)['albums']):
+            trax.extend([x['id'] for x in album['tracks']['items']])
+        return trax
+    else:
+        while size > 20:
+            case = album_ids[size-20:size]
+            for album in list(sp.albums(case)['albums']):
+                trax.extend([x['id'] for x in album['tracks']['items']])
+            size = size - 20
+            time.sleep(1)
+        case = album_ids[:size]
+        for album in list(sp.albums(case)['albums']):
+                trax.extend([x['id'] for x in album['tracks']['items']])
+        return trax
 
-class PlaylistMaker():
-    def __init__(self, artists, token, city):
-        self.artists = artists
-        self.token = token
-        self.city = city
+class MakePlaylist():
+    def __init__(self, sp, sp_username):
+        self.sp = sp
+        self.sp_username = sp_username
 
-    def get_user_details(self):
-        sp = spotipy.Spotify(auth=self.token)
-        username = sp.me()['id']
-        sp.user_playlist_create(user=username, name=f"{self.city} Bandmap Playlist") #create a new playlist
-        playlist_id = sp.current_user_playlists()['items'][0]['id'] #grab new playlist ID
-        return (username,playlist_id)
+    def get_playlist_id(self,pl_name):
+        playlists = [x['name'].lower() for x in self.sp.current_user_playlists()['items']]
 
-    def search_spotify(self):
-        sp = spotipy.Spotify(auth=self.token)
-        artist_ids = []
-        track_ids = []
-        for artist in self.artists:
-            results = sp.search(q= f"{artist['name']}", type='artist', limit=1)
+        #determine playlist ID
+        if pl_name.lower() not in playlists:
+            self.sp.user_playlist_create(user=self.sp_username, name=pl_name) #create a new playlist
+            playlist_id = self.sp.current_user_playlists()['items'][0]['id'] #grab new playlist ID
+            return playlist_id
 
-            if any(results['artists']['items']) and artist['name'].lower() == results['artists']['items'][0]['name'].lower():
+        elif pl_name.lower() in playlists:
+            playlist_id = self.sp.current_user_playlists()['items'][playlists.index(pl_name.lower())]['id']
+            return playlist_id
+
+    def search_artists(self, selected_artists):
+        artist_ids= []
+        for artist in selected_artists:
+            print(artist)
+            results = self.sp.search(q=artist['artist_name'], type='artist', limit=3)
+            
+            if len(results['artists']['items']) > 1:
+                for item in results['artists']['items']:
+                    try:
+                        if artist['genre'] in item['genres']:
+                            artist_ids.append(item['id'])
+                        else:
+                            continue
+                    except:
+                        continue
+            elif any(results['artists']['items']) and artist['artist_name'].lower() == results['artists']['items'][0]['name'].lower():
                 artist_ids.append(results['artists']['items'][0]['id'])
             else:
                 continue
+        artist_ids
+        top_trax = []
         if len(artist_ids) > 50:
             for id_ in artist_ids[:50]:
-                results = sp.artist_top_tracks(id_)
-                track_ids = [track['id'] for track in results['tracks']]
+                results = self.sp.artist_top_tracks(id_)
+                top_trax.extend([track['id'] for track in results['tracks']])
         else:
             for id_ in artist_ids:
-                results = sp.artist_top_tracks(id_)
-                track_ids = [track['id'] for track in results['tracks']]
+                results = self.sp.artist_top_tracks(id_)
+                top_trax.extend([track['id'] for track in results['tracks']])
 
-        return track_ids
+        return top_trax
 
-    def create_playlist(self, results, playlist_id, sp_username):
-        sp = spotipy.Spotify(auth=self.token)
+    def create_playlist(self, results, playlist_id):
         size = len(results)
         if size <= 100:
-            return sp.user_playlist_add_tracks(user=sp_username, playlist_id= playlist_id, tracks=results)
+            return self.sp.user_playlist_add_tracks(user=self.sp_username, playlist_id= playlist_id, tracks=results)
         else:
             while size > 100:
                 case = results[size-100:size]
-                sp.user_playlist_add_tracks(user=sp_username, playlist_id=playlist_id, tracks=case)
+                self.sp.user_playlist_add_tracks(user=self.sp_username, playlist_id=playlist_id, tracks=case)
                 size = size - 100
                 time.sleep(3)
             case = results[:size]
-            return sp.user_playlist_add_tracks(user=sp_username, playlist_id=playlist_id, tracks=case)
+            return self.sp.user_playlist_add_tracks(user=self.sp_username, playlist_id=playlist_id, tracks=case)

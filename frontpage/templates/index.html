@@ -6,41 +6,73 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <link rel="stylesheet" href="{% static '/css/materialize.css' %}">
     <link rel="stylesheet" href="{% static '/css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <title>BandMap</title>
 </head>
 <body>
-
+    <!-- Load the `mapbox-gl-geocoder` plugin. -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" type="text/css">
+    
     {% csrf_token %}
     {{location|json_script:'loc'}}
     {{geo|json_script:'geojson'}}
     {{sp_token|json_script:'sp_token'}}
     {{mapbox|json_script:'token'}}
     
-    <nav id='topnav' style='background-color: black;'>
-        <div class='nav-wraper'>
-            <ul id='nav-mobile' class='right'>
-                <li style='padding-right: 25px;'>
-                    <a class='btn waves-effect indigo accent-2' style='display: none;' id='spotify'>
-                    Make Playlist <img src={% static 'img/Spotify_Icon_RGB_White.png' %} style='max-width: 20px;'>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+    <style>
+        .spotify-logo {
+            opacity: 50%;
+            transition: 1s;
+        }
+        .spotify-logo:hover {
+            opacity: 100%;
+        }
+    </style>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+
     
     <div id='sideFeats' class='sidebar'>
+        {% csrf_token %}
+        <div class='row center'>
+        {% if sp_token %}
+            <div class='col s6'>
+                <a href='#' class='tooltipped' data-position="bottom" data-tooltip="Make a Spotify playlist"><img id='createPlaylist' class='spotify-logo' src="{% static 'img/Spotify_Icon_RGB_White.png' %}" style='max-width: 46px; padding-top: 10px;'></a>
+            </div>
+        {% else %}
+            <div class='col s6'>
+                <p style='color: #8B2635;'>To make a Spotify playlist, press the Spotify button at the bottom-left corner to authorize BandMap. After that, you can make a playlist
+                of artists from any selected city. If an artist doesn't appear in the playlist, it is likely they are not on Spotify.</p>
+            </div>
+        {% endif %}
+            <div class='col s6'>
+                <a href='#' class='tooltipped' data-position="bottom" data-tooltip="Make a new map" id='newLocation'><i class='medium material-icons'>map</i></a>
+            </div>
+        </div>
+        <div class='divider'></div>
         <ul id='artists' class='primary'>
         </ul>
     </div>
 
     <div id='map-container'></div>
 
+    {% if not sp_token %}
+    <div class='fixed-action-btn'>
+        <a href='#' class='waves-effects waves-light btn-floating btn-large green' id='spotifyAuth'>
+            <img src="{% static 'img/Spotify_Icon_RGB_White.png' %}" style='max-width: 32px; padding-top: 12px;'>
+        </a>
+    <div>
+    {% endif %}
+
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet' />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
     <script src="{% static '/js/map.js' %}"></script>
-
+    <script>
+        M.AutoInit();
+    </script>
 </body>
 </html>

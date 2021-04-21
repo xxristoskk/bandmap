@@ -58,6 +58,14 @@ const geojson = JSON.parse(document.getElementById('geojson').textContent);
 // add zoom and rotation controls to the map.
 map.addControl(new mapboxgl.NavigationControl());
 
+// add geocoder search bar
+map.addControl(
+  new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    mapboxgl: mapboxgl
+    })
+  );
+
 
 var circleRadius = ['step',['get','num_of_artists'],7,5,15,8,20,25,25,50,30,150,35];
 
@@ -133,20 +141,44 @@ map.on('style.load', function() {
     // })
 
     // console.log(sortedGenres)
-    console.log(selectedFeat.properties.city)
+
     artists.forEach(function(artist) {
       sortedArtists.push({'name': artist.name, 'genre': artist.genre})
     })
 
+    // button to get auth url and send the user to the auth page
+    $('#spotifyAuth').click(function() {
+      fetch('spotify/auth/')
+        .then((response) => response.json())
+        .then((data) => {
+            window.location.replace(data.url,"_blank");
+      });
+    })
+
+    // sends back the selected artists to make a playlist
     $('#createPlaylist').click(function() {
+      $('spinner').css('display', 'block')
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
       $.post({
-        url: 'selected_artists/',
+        url: 'spotify/selected_artists/',
         data: {'artists': sortedArtists, 'city': selectedFeat.properties.city, 'csrfmiddlewaretoken': csrftoken},
+        success: function(response) {
+          $('#spinner').css('display', 'none')
+        }
       })
-      console.log(artists)
     });
 
+    // gets the center of the new location and sends it back to populate a new map
+    $('#newLocation').click(function() {
+      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      let newCenter = map.getCenter();
+      console.log(newCenter)
+      $.post({
+        url: 'new_location/',
+        data: {'new_location': newCenter, 'csrfmiddlewaretoken': csrftoken},
+        });
+      setTimeout(function(){location.reload()}, 3000);
+    });
 
     artist_html = `
     <div class='row'>
