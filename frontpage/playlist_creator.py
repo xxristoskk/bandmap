@@ -42,23 +42,13 @@ class MakePlaylist():
     def search_artists(self, selected_artists):
         artist_ids= []
         for artist in selected_artists:
-            print(artist)
-            results = self.sp.search(q=artist['artist_name'], type='artist', limit=3)
-            
-            if len(results['artists']['items']) > 1:
-                for item in results['artists']['items']:
-                    try:
-                        if artist['genre'] in item['genres']:
-                            artist_ids.append(item['id'])
-                        else:
-                            continue
-                    except:
-                        continue
-            elif any(results['artists']['items']) and artist['artist_name'].lower() == results['artists']['items'][0]['name'].lower():
+            results = self.sp.search(q=artist['artist_name'], type='artist', limit=1)
+            # verifies the artist names match exactly
+            if any(results['artists']['items']) and artist['artist_name'].lower() == results['artists']['items'][0]['name'].lower():
                 artist_ids.append(results['artists']['items'][0]['id'])
             else:
                 continue
-        artist_ids
+        # find top tracks from artist ids
         top_trax = []
         if len(artist_ids) > 50:
             for id_ in artist_ids[:50]:

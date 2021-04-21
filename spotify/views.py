@@ -44,6 +44,7 @@ def validate_tokens(session_user):
 
 class PlaylistMaker(View):
     def post(self, *args, **kwargs):
+        # find spotify token associated with session
         token = SpotifyToken.objects.filter(session_user=self.request.session.session_key)[0]
 
         #get the data from POST
@@ -51,18 +52,19 @@ class PlaylistMaker(View):
         case = []
         artists = []
         city = data.dict()['city']
-
         for k,v in data.items():
-            if k.lower() != 'csrfmiddlewaretoken' and k != 'city':
+            if k.lower() != 'csrfmiddlewaretoken' and k.lower() != 'city':
                 case.append(v)
+
+        # making sure there are no duplicate artists
         case = list(set(case))
-        print(case)
-        for x in range(0,len(case),2):
+        for x in range(0,len(case)):
             artists.append({'artist_name':case[x]})
 
         #get the access token
         sp = validate_tokens(token.session_user)
-
+        
+        #get username and start building playlist
         username = sp.current_user()['id']
         playlist_maker = MakePlaylist(sp_username=username, sp=sp)
         track_ids = playlist_maker.search_artists(artists)

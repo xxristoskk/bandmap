@@ -41,7 +41,6 @@ if (currentLocation.latitude == null) {
 mapboxgl.accessToken = JSON.parse(document.getElementById('token').textContent).token;
 var initialZoom = 9;
 var initialCenter = [currentLocation.longitude, currentLocation.latitude]
-console.log(initialCenter)
 
 // create an object to hold the initialization options for a mapboxGL map
 var initOptions = {
@@ -57,14 +56,6 @@ const geojson = JSON.parse(document.getElementById('geojson').textContent);
 
 // add zoom and rotation controls to the map.
 map.addControl(new mapboxgl.NavigationControl());
-
-// add geocoder search bar
-map.addControl(
-  new MapboxGeocoder({
-    accessToken: mapboxgl.accessToken,
-    mapboxgl: mapboxgl
-    })
-  );
 
 
 var circleRadius = ['step',['get','num_of_artists'],7,5,15,8,20,25,25,50,30,150,35];
@@ -109,6 +100,42 @@ map.on('style.load', function() {
       'circle-stroke-width': 2
     }
   });
+  
+  // adding and removing geocoder search bar
+  let searchBar = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    mapboxgl: mapboxgl
+  })
+
+  // toggle new searchbar
+  $('#addSearch').click(function() {
+    if (map.hasControl(searchBar)) {
+      map.removeControl(searchBar)
+    } else {
+      map.addControl(searchBar)
+    }
+  })
+
+  // gets the center of the new location and sends it back to populate a new map
+  $('#newLocation').click(function() {
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    let newCenter = map.getCenter();
+    console.log(newCenter)
+    $.post({
+      url: 'new_location/',
+      data: {'new_location': newCenter, 'csrfmiddlewaretoken': csrftoken},
+      })
+    setTimeout(function(){location.reload()}, 3000);
+  });
+
+  // button to get auth url and send the user to the auth page
+  $('#spotifyAuth').click(function() {
+    fetch('spotify/auth/')
+      .then((response) => response.json())
+      .then((data) => {
+          window.location.replace(data.url,"_blank");
+    });
+  })
 
   // Create a popup, but don't add it to the map yet.
   var popup = new mapboxgl.Popup({
@@ -122,62 +149,25 @@ map.on('style.load', function() {
     var features = map.queryRenderedFeatures(e.point, {
         layers: ['clusters'],
     });
-
+    
+    // properties fo selected feature
     let selectedFeat = e.features[0];
+    // parse embedded json object
     var artists = JSON.parse(selectedFeat.properties.artists);
-    console.log(artists)
 
+    // sort selected artists to search spotify
     sortedArtists = []
-    // sortedGenres = {}
-    // temp = []
-
-    // artists.forEach(function(artist) {
-    //   if (artist.genre in temp && artist.genre != undefined) {
-    //     sortedGenres[artist.genre].push(artist.name)
-    //   } else {
-    //     temp.push(artist.genre)
-    //     sortedGenres[artist.genre] = [artist.name]
-    //   }
-    // })
-
-    // console.log(sortedGenres)
-
     artists.forEach(function(artist) {
-      sortedArtists.push({'name': artist.name, 'genre': artist.genre})
-    })
-
-    // button to get auth url and send the user to the auth page
-    $('#spotifyAuth').click(function() {
-      fetch('spotify/auth/')
-        .then((response) => response.json())
-        .then((data) => {
-            window.location.replace(data.url,"_blank");
-      });
+      sortedArtists.push({'name': artist.name})
     })
 
     // sends back the selected artists to make a playlist
     $('#createPlaylist').click(function() {
-      $('spinner').css('display', 'block')
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
       $.post({
         url: 'spotify/selected_artists/',
         data: {'artists': sortedArtists, 'city': selectedFeat.properties.city, 'csrfmiddlewaretoken': csrftoken},
-        success: function(response) {
-          $('#spinner').css('display', 'none')
-        }
       })
-    });
-
-    // gets the center of the new location and sends it back to populate a new map
-    $('#newLocation').click(function() {
-      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-      let newCenter = map.getCenter();
-      console.log(newCenter)
-      $.post({
-        url: 'new_location/',
-        data: {'new_location': newCenter, 'csrfmiddlewaretoken': csrftoken},
-        });
-      setTimeout(function(){location.reload()}, 3000);
     });
 
     artist_html = `

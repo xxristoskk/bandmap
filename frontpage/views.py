@@ -106,11 +106,11 @@ class MapView(View):
                 local_artists = list(local_artists)
                 print(loc_lookup.raw)
                 try:
-                    region = loc_lookup.raw['address']['city'].lower()
+                    region = loc_lookup.raw['address']['state'].lower()
                     print(region)
                     additional_artists = coll.find({'latitude':{'$exists':True},'location':{'$regex':f'({region.lower()})'}})
                 except:
-                    region = loc_lookup.raw['address']['country_code'].lower()
+                    region = loc_lookup.raw['address']['city'].lower()
                     print(region)
                     additional_artists = coll.find({'latitude':{'$exists':True},'location':{'$regex':f'(, {region.lower()})'}})
                 local_artists.extend(list(additional_artists))
