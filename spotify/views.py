@@ -27,7 +27,7 @@ def validate_tokens(session_user):
     oauth = SpotifyOAuth(
         client_id=client_id,
         client_secret=client_secret,
-        redirect_uri='http://127.0.0.1:8000/redirect/',
+        redirect_uri=redirect_uri,
         scope=scope,
         cache_handler=CustomCacheHandler(session_user),
         show_dialog=True
