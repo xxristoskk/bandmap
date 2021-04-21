@@ -32,7 +32,7 @@ def validate_tokens(session_user):
         cache_handler=CustomCacheHandler(session_user),
         show_dialog=True
     )
-    ##
+    # check to see if token is expired
     token_info = SpotifyToken.objects.filter(session_user=session_user)[0]
     expiration = token_info.expires_in
     if expiration <= timezone.now():
