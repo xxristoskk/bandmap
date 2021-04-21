@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.utils import timezone
 from datetime import timedelta
-from frontpage.playlist_creator import PlaylistMaker
+from frontpage.playlist_creator import MakePlaylist
 from .models import SpotifyToken
 
 # rest framework imports

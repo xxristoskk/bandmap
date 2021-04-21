@@ -6,7 +6,7 @@ import os
 # imports for maps
 from geopy.geocoders import Nominatim
 from frontpage.map_maker import MapMaker
-from playlist_creator import MakePlaylist
+from frontpage.playlist_creator import MakePlaylist
 
 
 # handling spotify auth
