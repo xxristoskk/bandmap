@@ -125,7 +125,7 @@ map.on('style.load', function() {
       url: 'new_location/',
       data: {'new_location': newCenter, 'csrfmiddlewaretoken': csrftoken},
       })
-    setTimeout(function(){location.reload()}, 3000);
+    setTimeout(function(){location.reload()}, 1500);
   });
 
   // button to get auth url and send the user to the auth page
@@ -167,6 +167,9 @@ map.on('style.load', function() {
       $.post({
         url: 'spotify/selected_artists/',
         data: {'artists': sortedArtists, 'city': selectedFeat.properties.city, 'csrfmiddlewaretoken': csrftoken},
+        // success: function() {
+        //   $('#success').addClass('activate')
+        // }
       })
     });
 
@@ -186,7 +189,7 @@ map.on('style.load', function() {
       artist_html += `
       <div class='row valign-wrapper'>
         <div class='col s6'>
-          <a href='${artist.bc_url}'>${artist.name}</a>
+          <a href='${artist.bc_url}' target="_blank" rel="noopener noreferrer">${artist.name}</a>
         </div>
         <div class='col s6'>
           <span class='right'>${artist.genre}</span>

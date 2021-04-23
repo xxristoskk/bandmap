@@ -1,0 +1,30 @@
+{% comment %} <form method='POST'>
+    {% csrf_token %}
+    <div class='row'>
+        <div class='input-field'>
+            {{form.name}}
+            <label class='active' for='name'>Your Name</label>
+        </div>
+        <div class='input-field'>
+            {{form.subject}}
+            <label class='active' for='subject'>Subject</label>
+        </div>
+
+    </div>
+    <div class='row'>
+        <div class='input-field'>
+            {{form.sender}}
+            <label class='active' for='sender'>Your Email</label>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='input-field'>
+            {{form.message}}
+        </div>
+    </div>
+    <button class='btn waves-effect red' type='submit' name='action'>Send <i class='tiny material-icons'>send</i></button>
+</form> {% endcomment %}
+
+<div class='row'>
+    <p>If you find a bug, missing/incorrect data, or want to request a feature, send an <a class='popup-links' href='mailto:x.katsaros.ds@gmail.com'>email</a> with a <em>descriptive</em> subject.</p>
+</div>

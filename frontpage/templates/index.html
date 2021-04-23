@@ -14,6 +14,26 @@
 </head>
 <body>
     <style>
+    .popup-success {
+        visibility: hidden;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        opacity: 0;
+        transition: .5s ease-in;
+        align-items: center;
+        justify-content: center;
+        background: black;
+    }
+
+    .popup-success.active {
+        visibility: visible;
+        opacity: .9;
+    }
+
     .popup-intro {
         background: gray;
         position: fixed;
@@ -58,7 +78,6 @@
 
     </style>
     
-    
     {% csrf_token %}
     {{location|json_script:'loc'}}
     {{geo|json_script:'geojson'}}
@@ -67,20 +86,26 @@
 
     <div id='map-container'></div>
 
+    {% comment %} <div class='popup-success' id='success'>
+        <div class='popup-intro-content' id='success'>
+            <h2 class='primary'>Playlist Created!</h2>
+        </div>
+    </div> {% endcomment %}
+
     <div class='popup-intro' id='intro'>
         <div class='popup-intro-content' id='intro'>
             <div class='container'>
                 <div class='row center'>
                     <header class='header'>
-                        <h3 class='primary'>Welcome To BandMap!</h3>
-                        <h5 style='color: #8B2635'>A way to explore Bandcamp from a map.</h5>
+                        <h2 class='primary'>Welcome To BandMap!</h2>
+                        <h5 style='color: #8B2635'>A way to explore Bandcamp on a map.</h5>
                     </header>
                 </div>
 
                 <div class='row center'>
                     <div class='col s12'>
                         <ul class='tabs tabs-fixed-width z-depth-1'>
-                            <li class='tab col s3'><a href='#intro-tab'>Button Info</a></li>
+                            <li class='tab col s3'><a href='#intro-tab'>Info</a></li>
                             <li class='tab col s3'><a href='#sources-tab'>Sources</a></li>
                             <li class='tab col s3'><a href='#contact-tab'>Contact</a></li>
                         </ul>
@@ -88,34 +113,15 @@
                 </div>
             </div>
             <div class='container' id='intro-tab'>
-                <div class='row'>
-                    <ol>
-                        <li><strong>Search:</strong><p>Toggles search bar display so you can go to new locations. Most places have artists from Bandcamp, 
-                        but not all of them.</p></li>
-                        <li><strong>Map:</strong><p>Populates the map with artists from a new location. If the center of a map is on a border of a state or country, 
-                        move the map so that the center is on the region you'd like to build a map for.</p></li>
-                        <li><strong>Spotify:</strong><p>Inititally takes you to the Spotify sign-in page to authorize BandMap to make playlists.
-                        After authorizing, you can make a playlist containing the top songs from all the artists in the selected city.</p></li>
-                        <li><strong>Info:</strong><p>Brings up this window again, just in case you need it.</li>
-                    </ol>
-                </div>
+                {% include 'includes/info.html' %}
             </div>
 
             <div class='container' id='sources-tab'>
-                <div class='row center'>
-                    <a class='popup-links' href='https://github.com/xxristoskk/bandmap'>Source Code</a> || <a class='popup-links' href='https://qri.cloud/xristosk/bandcamp_artists'>Qri Dataset</a>
-                </div>
-                <div class='row'>
-                    <p>All data comes directly from what the artists list on the page, but the data on BandMap is not updated regularly. 
-                    Artists can change genres or locations. If you are an artist on Bandcamp and see some incorrect or missing information, send an email with 
-                    the corrections.</p>
-                </div>
+                {% include 'includes/sources.html' %}
             </div>
 
             <div class='container' id='contact-tab'>
-                <div class='row'>
-                    <p>If you find a bug, missing/incorrect data, or want to request a feature, send an <a class='popup-links' href='mailto:x.katsaros.ds@gmail.com'>email</a> with a <em>descriptive</em> subject.</p>
-                </div>
+                {% include 'includes/contact.html' %}
             </div>
         </div>
     </div>
@@ -130,35 +136,7 @@
         <a href='#' class='btn-floating btn-large pulse indigo darken-4'>
         <i class='large material-icons'>menu</i>
         </a>
-        <ul>
-            <li>
-                <a href='#' class='btn-floating btn-medium tooltipped red' data-position='left' data-tooltip='Search a new location' id='addSearch'>
-                <i class='medium material-icons'>search</i>
-                </a>
-            </li>
-            <li>
-                <a href='#' class='tooltipped btn-floating btn-medium indigo' data-position="left" data-tooltip="Make a new map based on current center-point" id='newLocation'>
-                <i class='medium material-icons'>map</i>
-                </a>
-            </li>
-            {% if sp_token %}
-            <li>
-                <a href='#' class='btn-floating btn-medium green tooltipped' data-position="left" data-tooltip="Make a Spotify playlist" id='createPlaylist'>
-                <img src="{% static 'img/Spotify_Icon_RGB_White.png' %}" style='max-width: 22px; padding-top: 9px;'>
-                </a>
-            </li>
-            {% else %}
-            <li>
-                <a href='#' class='btn-floating btn-medium green tooltipped' data-position="left" data-tooltip="Authroize BandMap to make playlists" id='spotifyAuth'>
-                <img src="{% static 'img/Spotify_Icon_RGB_White.png' %}" style='max-width: 22px; padding-top: 9px;'>
-                </a>
-            </li>
-            {% endif %}
-            <li>
-                <a href='#' class='btn-floating btn-medium blue tooltipped' data-position='left' data-tooltip='More Info' id='open-intro'>
-                <i class='medium material-icons'>info_outline</i>
-                </a>
-            </li>
+        {% include 'includes/buttons.html' %}
     <div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
@@ -188,6 +166,13 @@
         document.addEventListener("click", e => {
         if (e.target == document.querySelector(".popup-intro.activate")) {
             document.querySelector(".popup-intro.activate").classList.remove('activate');
+            document.querySelector('.popup-intro-content').classList.remove('activate')
+        }
+        });
+
+        document.addEventListener("click", e => {
+        if (e.target == document.querySelector(".popup-intro.activate")) {
+            document.querySelector(".popup-success.activate").classList.remove('activate');
             document.querySelector('.popup-intro-content').classList.remove('activate')
         }
         });

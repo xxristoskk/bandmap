@@ -1,0 +1,31 @@
+{% load static %}
+<ul>
+    <li>
+        <a href='#' class='btn-floating btn-medium tooltipped red' data-position='left' data-tooltip='Search for a location' id='addSearch'>
+        <i class='medium material-icons'>search</i>
+        </a>
+    </li>
+    <li>
+        <a href='#' class='tooltipped btn-floating btn-medium indigo' data-position="left" data-tooltip="Make a new map" id='newLocation'>
+        <i class='medium material-icons'>map</i>
+        </a>
+    </li>
+    {% if sp_token %}
+    <li>
+        <a href='#' class='btn-floating btn-medium green tooltipped' data-position="left" data-tooltip="Make a Spotify playlist" id='createPlaylist'>
+        <img src="{% static 'img/Spotify_Icon_RGB_White.png' %}" style='max-width: 22px; padding-top: 9px;'>
+        </a>
+    </li>
+    {% else %}
+    <li>
+        <a href='#' class='btn-floating btn-medium green tooltipped' data-position="left" data-tooltip="Authroize BandMap" id='spotifyAuth'>
+        <img src="{% static 'img/Spotify_Icon_RGB_White.png' %}" style='max-width: 22px; padding-top: 9px;'>
+        </a>
+    </li>
+    {% endif %}
+    <li>
+        <a href='#' class='btn-floating btn-medium blue tooltipped' data-position='left' data-tooltip='More Info' id='open-intro'>
+        <i class='medium material-icons'>info_outline</i>
+        </a>
+    </li>
+</ul>
