@@ -3,7 +3,7 @@
  * Copyright 2014-2017 Materialize
  * MIT License (https://raw.githubusercontent.com/Dogfalo/materialize/master/LICENSE)
  */
-.materialize-red {
+ .materialize-red {
   background-color: #e51c23 !important;
 }
 
@@ -84,7 +84,7 @@
 }
 
 .red {
-  background-color: #F44336 !important;
+  background-color: #8B2635 !important;
 }
 
 .red-text {
@@ -644,7 +644,7 @@
 }
 
 .blue {
-  background-color: #2196F3 !important;
+  background-color: #5bb5ff !important;
 }
 
 .blue-text {
@@ -1092,7 +1092,7 @@
 }
 
 .green {
-  background-color: #4CAF50 !important;
+  background-color: #268c4a !important;
 }
 
 .green-text {
@@ -5037,7 +5037,7 @@ small {
   overflow-y: hidden;
   height: 48px;
   width: 100%;
-  background-color: #fff;
+  background-color: transparent;
   margin: 0 auto;
   white-space: nowrap;
 }
@@ -5049,16 +5049,16 @@ small {
 .tabs.tabs-transparent .tab a,
 .tabs.tabs-transparent .tab.disabled a,
 .tabs.tabs-transparent .tab.disabled a:hover {
-  color: rgba(255, 255, 255, 0.7);
+  color: transparent;
 }
 
 .tabs.tabs-transparent .tab a:hover,
 .tabs.tabs-transparent .tab a.active {
-  color: #fff;
+  color: #6d7ee0;
 }
 
 .tabs.tabs-transparent .indicator {
-  background-color: #fff;
+  background-color: transparent;
 }
 
 .tabs.tabs-fixed-width {
@@ -5086,7 +5086,7 @@ small {
 }
 
 .tabs .tab a {
-  color: rgba(238, 110, 115, 0.7);
+  color: #9fa8da;
   display: block;
   width: 100%;
   height: 100%;
@@ -5099,13 +5099,13 @@ small {
 }
 
 .tabs .tab a:focus, .tabs .tab a:focus.active {
-  background-color: rgba(246, 178, 181, 0.2);
+  background-color: #9fa8da;
   outline: none;
 }
 
 .tabs .tab a:hover, .tabs .tab a.active {
   background-color: transparent;
-  color: #ee6e73;
+  color: #283a9c;
 }
 
 .tabs .tab.disabled a,
@@ -5118,7 +5118,7 @@ small {
   position: absolute;
   bottom: 0;
   height: 2px;
-  background-color: #f6b2b5;
+  background-color: #5c6bc0;
   will-change: left, right;
 }
 
@@ -8658,442 +8658,5 @@ input[type=range]::-ms-thumb {
     opacity: 0;
     -webkit-transform: scale(1.5);
             transform: scale(1.5);
-  }
-}
-
-/* Modal */
-.datepicker-modal {
-  max-width: 325px;
-  min-width: 300px;
-  max-height: none;
-}
-
-.datepicker-container.modal-content {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -webkit-flex-direction: column;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  padding: 0;
-}
-
-.datepicker-controls {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: justify;
-  -webkit-justify-content: space-between;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-  width: 280px;
-  margin: 0 auto;
-}
-
-.datepicker-controls .selects-container {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-}
-
-.datepicker-controls .select-wrapper input {
-  border-bottom: none;
-  text-align: center;
-  margin: 0;
-}
-
-.datepicker-controls .select-wrapper input:focus {
-  border-bottom: none;
-}
-
-.datepicker-controls .select-wrapper .caret {
-  display: none;
-}
-
-.datepicker-controls .select-year input {
-  width: 50px;
-}
-
-.datepicker-controls .select-month input {
-  width: 70px;
-}
-
-.month-prev, .month-next {
-  margin-top: 4px;
-  cursor: pointer;
-  background-color: transparent;
-  border: none;
-}
-
-/* Date Display */
-.datepicker-date-display {
-  -webkit-box-flex: 1;
-  -webkit-flex: 1 auto;
-      -ms-flex: 1 auto;
-          flex: 1 auto;
-  background-color: #26a69a;
-  color: #fff;
-  padding: 20px 22px;
-  font-weight: 500;
-}
-
-.datepicker-date-display .year-text {
-  display: block;
-  font-size: 1.5rem;
-  line-height: 25px;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.datepicker-date-display .date-text {
-  display: block;
-  font-size: 2.8rem;
-  line-height: 47px;
-  font-weight: 500;
-}
-
-/* Calendar */
-.datepicker-calendar-container {
-  -webkit-box-flex: 2.5;
-  -webkit-flex: 2.5 auto;
-      -ms-flex: 2.5 auto;
-          flex: 2.5 auto;
-}
-
-.datepicker-table {
-  width: 280px;
-  font-size: 1rem;
-  margin: 0 auto;
-}
-
-.datepicker-table thead {
-  border-bottom: none;
-}
-
-.datepicker-table th {
-  padding: 10px 5px;
-  text-align: center;
-}
-
-.datepicker-table tr {
-  border: none;
-}
-
-.datepicker-table abbr {
-  text-decoration: none;
-  color: #999;
-}
-
-.datepicker-table td {
-  border-radius: 50%;
-  padding: 0;
-}
-
-.datepicker-table td.is-today {
-  color: #26a69a;
-}
-
-.datepicker-table td.is-selected {
-  background-color: #26a69a;
-  color: #fff;
-}
-
-.datepicker-table td.is-outside-current-month, .datepicker-table td.is-disabled {
-  color: rgba(0, 0, 0, 0.3);
-  pointer-events: none;
-}
-
-.datepicker-day-button {
-  background-color: transparent;
-  border: none;
-  line-height: 38px;
-  display: block;
-  width: 100%;
-  border-radius: 50%;
-  padding: 0 5px;
-  cursor: pointer;
-  color: inherit;
-}
-
-.datepicker-day-button:focus {
-  background-color: rgba(43, 161, 150, 0.25);
-}
-
-/* Footer */
-.datepicker-footer {
-  width: 280px;
-  margin: 0 auto;
-  padding-bottom: 5px;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: justify;
-  -webkit-justify-content: space-between;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-}
-
-.datepicker-cancel,
-.datepicker-clear,
-.datepicker-today,
-.datepicker-done {
-  color: #26a69a;
-  padding: 0 1rem;
-}
-
-.datepicker-clear {
-  color: #F44336;
-}
-
-/* Media Queries */
-@media only screen and (min-width: 601px) {
-  .datepicker-modal {
-    max-width: 625px;
-  }
-  .datepicker-container.modal-content {
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-    -webkit-flex-direction: row;
-        -ms-flex-direction: row;
-            flex-direction: row;
-  }
-  .datepicker-date-display {
-    -webkit-box-flex: 0;
-    -webkit-flex: 0 1 270px;
-        -ms-flex: 0 1 270px;
-            flex: 0 1 270px;
-  }
-  .datepicker-controls,
-  .datepicker-table,
-  .datepicker-footer {
-    width: 320px;
-  }
-  .datepicker-day-button {
-    line-height: 44px;
-  }
-}
-
-/* Timepicker Containers */
-.timepicker-modal {
-  max-width: 325px;
-  max-height: none;
-}
-
-.timepicker-container.modal-content {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -webkit-flex-direction: column;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  padding: 0;
-}
-
-.text-primary {
-  color: white;
-}
-
-/* Clock Digital Display */
-.timepicker-digital-display {
-  -webkit-box-flex: 1;
-  -webkit-flex: 1 auto;
-      -ms-flex: 1 auto;
-          flex: 1 auto;
-  background-color: #26a69a;
-  padding: 10px;
-  font-weight: 300;
-}
-
-.timepicker-text-container {
-  font-size: 4rem;
-  font-weight: bold;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.6);
-  font-weight: 400;
-  position: relative;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-}
-
-.timepicker-span-hours,
-.timepicker-span-minutes,
-.timepicker-span-am-pm div {
-  cursor: pointer;
-}
-
-.timepicker-span-hours {
-  margin-right: 3px;
-}
-
-.timepicker-span-minutes {
-  margin-left: 3px;
-}
-
-.timepicker-display-am-pm {
-  font-size: 1.3rem;
-  position: absolute;
-  right: 1rem;
-  bottom: 1rem;
-  font-weight: 400;
-}
-
-/* Analog Clock Display */
-.timepicker-analog-display {
-  -webkit-box-flex: 2.5;
-  -webkit-flex: 2.5 auto;
-      -ms-flex: 2.5 auto;
-          flex: 2.5 auto;
-}
-
-.timepicker-plate {
-  background-color: #eee;
-  border-radius: 50%;
-  width: 270px;
-  height: 270px;
-  overflow: visible;
-  position: relative;
-  margin: auto;
-  margin-top: 25px;
-  margin-bottom: 5px;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-}
-
-.timepicker-canvas,
-.timepicker-dial {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-}
-
-.timepicker-minutes {
-  visibility: hidden;
-}
-
-.timepicker-tick {
-  border-radius: 50%;
-  color: rgba(0, 0, 0, 0.87);
-  line-height: 40px;
-  text-align: center;
-  width: 40px;
-  height: 40px;
-  position: absolute;
-  cursor: pointer;
-  font-size: 15px;
-}
-
-.timepicker-tick.active,
-.timepicker-tick:hover {
-  background-color: rgba(38, 166, 154, 0.25);
-}
-
-.timepicker-dial {
-  -webkit-transition: opacity 350ms, -webkit-transform 350ms;
-  transition: opacity 350ms, -webkit-transform 350ms;
-  transition: transform 350ms, opacity 350ms;
-  transition: transform 350ms, opacity 350ms, -webkit-transform 350ms;
-}
-
-.timepicker-dial-out {
-  opacity: 0;
-}
-
-.timepicker-dial-out.timepicker-hours {
-  -webkit-transform: scale(1.1, 1.1);
-          transform: scale(1.1, 1.1);
-}
-
-.timepicker-dial-out.timepicker-minutes {
-  -webkit-transform: scale(0.8, 0.8);
-          transform: scale(0.8, 0.8);
-}
-
-.timepicker-canvas {
-  -webkit-transition: opacity 175ms;
-  transition: opacity 175ms;
-}
-
-.timepicker-canvas line {
-  stroke: #26a69a;
-  stroke-width: 4;
-  stroke-linecap: round;
-}
-
-.timepicker-canvas-out {
-  opacity: 0.25;
-}
-
-.timepicker-canvas-bearing {
-  stroke: none;
-  fill: #26a69a;
-}
-
-.timepicker-canvas-bg {
-  stroke: none;
-  fill: #26a69a;
-}
-
-/* Footer */
-.timepicker-footer {
-  margin: 0 auto;
-  padding: 5px 1rem;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: justify;
-  -webkit-justify-content: space-between;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-}
-
-.timepicker-clear {
-  color: #F44336;
-}
-
-.timepicker-close {
-  color: #26a69a;
-}
-
-.timepicker-clear,
-.timepicker-close {
-  padding: 0 20px;
-}
-
-/* Media Queries */
-@media only screen and (min-width: 601px) {
-  .timepicker-modal {
-    max-width: 600px;
-  }
-  .timepicker-container.modal-content {
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-    -webkit-flex-direction: row;
-        -ms-flex-direction: row;
-            flex-direction: row;
-  }
-  .timepicker-text-container {
-    top: 32%;
-  }
-  .timepicker-display-am-pm {
-    position: relative;
-    right: auto;
-    bottom: auto;
-    text-align: center;
-    margin-top: 1.2rem;
   }
 }

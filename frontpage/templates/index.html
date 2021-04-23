@@ -13,55 +13,126 @@
     <title>BandMap</title>
 </head>
 <body>
-    <!-- Load the `mapbox-gl-geocoder` plugin. -->
-    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
-    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" type="text/css">
+    <style>
+    .popup-intro {
+        background: gray;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        visibility: hidden;
+        opacity: 0;
+        transition: .7s ease-in;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .popup-intro-content {
+        position: relative;
+        width: 700px;
+        height: 400px;
+        border-radius: 10px;
+        background: black;
+        visibility: hidden;
+        opacity: 0;
+        overflow: auto;
+        transition: .7s ease-in;
+        color: white;
+    }
+
+    .popup-intro-content.activate {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .popup-intro.activate {
+        visibility: visible;
+        opacity: .9;
+    }
+
+    .popup-links {
+        color: #268c4a;
+    }
+
+    </style>
+    
     
     {% csrf_token %}
     {{location|json_script:'loc'}}
     {{geo|json_script:'geojson'}}
     {{sp_token|json_script:'sp_token'}}
     {{mapbox|json_script:'token'}}
-    
-    <style>
-        .spotify-logo {
-            opacity: 50%;
-            transition: 1s;
-        }
-        .spotify-logo:hover {
-            opacity: 100%;
-        }
-    </style>
-    
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
 
-    
-    <div id='sideFeats' class='sidebar'>
-        {% csrf_token %}
-        <div class='container'>
-            <div class='row center'>
-            {% if sp_token %}
-                <p style='color: #8B2635;'>Press the Spotify button from the menu to make a playlist of these artists' top tracks.
-            {% else %}
-                <p style='color: #8B2635;'>To make Spotify playlists based on selected city, press the Spotify button from the menu at the bottom-right corner. After authorizing, 
-                you can start making playlists. You can also build a new map based on the current map center point.</p>
-            {% endif %}
+    <div id='map-container'></div>
+
+    <div class='popup-intro' id='intro'>
+        <div class='popup-intro-content' id='intro'>
+            <div class='container'>
+                <div class='row center'>
+                    <header class='header'>
+                        <h3 class='primary'>Welcome To BandMap!</h3>
+                        <h5 style='color: #8B2635'>A way to explore Bandcamp from a map.</h5>
+                    </header>
+                </div>
+
+                <div class='row center'>
+                    <div class='col s12'>
+                        <ul class='tabs tabs-fixed-width z-depth-1'>
+                            <li class='tab col s3'><a href='#intro-tab'>Button Info</a></li>
+                            <li class='tab col s3'><a href='#sources-tab'>Sources</a></li>
+                            <li class='tab col s3'><a href='#contact-tab'>Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class='container' id='intro-tab'>
+                <div class='row'>
+                    <ol>
+                        <li><strong>Search:</strong><p>Toggles search bar display so you can go to new locations. Most places have artists from Bandcamp, 
+                        but not all of them.</p></li>
+                        <li><strong>Map:</strong><p>Populates the map with artists from a new location. If the center of a map is on a border of a state or country, 
+                        move the map so that the center is on the region you'd like to build a map for.</p></li>
+                        <li><strong>Spotify:</strong><p>Inititally takes you to the Spotify sign-in page to authorize BandMap to make playlists.
+                        After authorizing, you can make a playlist containing the top songs from all the artists in the selected city.</p></li>
+                        <li><strong>Info:</strong><p>Brings up this window again, just in case you need it.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class='container' id='sources-tab'>
+                <div class='row center'>
+                    <a class='popup-links' href='https://github.com/xxristoskk/bandmap'>Source Code</a> || <a class='popup-links' href='https://qri.cloud/xristosk/bandcamp_artists'>Qri Dataset</a>
+                </div>
+                <div class='row'>
+                    <p>All data comes directly from what the artists list on the page, but the data on BandMap is not updated regularly. 
+                    Artists can change genres or locations. If you are an artist on Bandcamp and see some incorrect or missing information, send an email with 
+                    the corrections.</p>
+                </div>
+            </div>
+
+            <div class='container' id='contact-tab'>
+                <div class='row'>
+                    <p>If you find a bug, missing/incorrect data, or want to request a feature, send an <a class='popup-links' href='mailto:x.katsaros.ds@gmail.com'>email</a> with a <em>descriptive</em> subject.</p>
+                </div>
             </div>
         </div>
-        <div class='divider'></div>
+    </div>
+
+    <div id='sideFeats' class='sidebar'>
+        {% csrf_token %}
         <ul id='artists' class='primary'>
         </ul>
     </div>
 
-    <div id='map-container'></div>
-
     <div class='fixed-action-btn'>
-        <a href='#' class='btn-floating btn-large pulse indigo darken-2'>
+        <a href='#' class='btn-floating btn-large pulse indigo darken-4'>
         <i class='large material-icons'>menu</i>
         </a>
         <ul>
             <li>
-                <a href='#' class='btn-floating btn-medium tooltipped red darken-4' data-position='left' data-tooltip='Search a new location' id='addSearch'>
+                <a href='#' class='btn-floating btn-medium tooltipped red' data-position='left' data-tooltip='Search a new location' id='addSearch'>
                 <i class='medium material-icons'>search</i>
                 </a>
             </li>
@@ -83,13 +154,44 @@
                 </a>
             </li>
             {% endif %}
+            <li>
+                <a href='#' class='btn-floating btn-medium blue tooltipped' data-position='left' data-tooltip='More Info' id='open-intro'>
+                <i class='medium material-icons'>info_outline</i>
+                </a>
+            </li>
     <div>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" type="text/css">
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet' />
     <script src="{% static '/js/map.js' %}"></script>
+
     <script>
+
         M.AutoInit();
+
+        function popupIntro() {
+            if ($('#intro').hasClass('activate')) {
+                $('.popup-intro, .popup-intro-content').removeClass('activate')
+                console.log($('.popup-intro').attr('class'))
+            } else {
+                console.log('ayy')
+                $('.popup-intro, .popup-intro-content').addClass('activate')
+                console.log($('.popup-intro').attr('class'))
+            }
+        };
+
+        $('#open-intro').click(popupIntro);
+
+        document.addEventListener("click", e => {
+        if (e.target == document.querySelector(".popup-intro.activate")) {
+            document.querySelector(".popup-intro.activate").classList.remove('activate');
+            document.querySelector('.popup-intro-content').classList.remove('activate')
+        }
+        });
+
     </script>
 </body>
 </html>
