@@ -75,6 +75,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bandmap.wsgi.application'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PW']
+EMAIL_PORT = 587
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
