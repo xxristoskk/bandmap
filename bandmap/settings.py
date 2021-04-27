@@ -25,7 +25,7 @@ SECRET_KEY = os.environ['DJANGO_SECRET']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['bandmap-v1.herokuapp.com']
+ALLOWED_HOSTS = ['bandmap-v1.herokuapp.com','bandmap-staging.herokuapp.com']
 
 
 # Application definition
