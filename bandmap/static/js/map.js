@@ -1,5 +1,6 @@
 // initialize global scope
 currentLocation = JSON.parse(document.getElementById('loc').textContent);
+
 if (!(localStorage.getItem('mapStyle'))) {
   localStorage.setItem('mapStyle', 'mapbox://styles/mapbox/dark-v10')
 }
@@ -42,8 +43,9 @@ var initialCenter = [currentLocation.longitude, currentLocation.latitude]
 var mapStyle = localStorage.getItem('mapStyle')
 
 
-document.getElementById('options').addEventListener('click', function(e) {
+document.getElementById('changeStyle').addEventListener('change', function(e) {
   localStorage.setItem('mapStyle', e.target.value)
+  location.reload()
 })
 
 var initOptions = {
@@ -180,7 +182,7 @@ map.on('style.load', function() {
         data: {'artists': sortedArtists, 'city': selectedFeat.properties.city, 'csrfmiddlewaretoken': csrftoken},
         success: function() {
           $('.popup-success').addClass('activate')
-          setTimeout(function(){$('.popup-success').removeClass('activate')}, 2000)
+          setTimeout(function(){$('.popup-success').removeClass('activate')}, 3000)
         }
       })
     });
