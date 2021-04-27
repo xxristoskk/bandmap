@@ -1,0 +1,23 @@
+<div class='row'>
+    <div class='input-field col s12 l6'>
+        <select id='changeStyle'>
+            <option value='mapbox://styles/mapbox/dark-v10'>Dark</option>
+            <option value='mapbox://styles/mapbox/light-v10'>Light</option>
+        </select>
+        <label>Map Style</label>
+    </div>
+</div>
+
+<div class='row center'>
+    <form method='POST'>
+        {% csrf_token %}
+        <div class='input-field col s12 l6'>
+                {{filter_form.genre1}}
+            <label>Genre Filters</label>
+        </div>
+        <div class='input-field col s12 l6'>
+                {{filter_form.genre2}}
+        </div>
+        <button class='btn red' type='submit' name='filter' id='options'>Save</button>
+    </form>
+</div>

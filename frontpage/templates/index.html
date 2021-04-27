@@ -14,26 +14,6 @@
 </head>
 <body>
     <style>
-    .popup-success {
-        visibility: hidden;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        display: flex;
-        opacity: 0;
-        transition: .5s ease-in;
-        align-items: center;
-        justify-content: center;
-        background: black;
-    }
-
-    .popup-success.active {
-        visibility: visible;
-        opacity: .9;
-    }
-
     .popup-intro {
         background: gray;
         position: fixed;
@@ -52,9 +32,10 @@
     .popup-intro-content {
         position: relative;
         width: 700px;
-        height: 400px;
+        height: 500px;
         border-radius: 10px;
         background: black;
+        background-image: linear-gradient(360deg, #c5cae9 15%, black);
         visibility: hidden;
         opacity: 0;
         overflow: auto;
@@ -76,7 +57,26 @@
         color: #268c4a;
     }
 
+    .popup-success {
+        top: 50px;
+        left: 500px;
+        position: fixed;
+        width: 480px;
+        height: 90;
+        border-radius: 10px;
+        background: black;
+        visibility: hidden;
+        opacity: 0;
+        overflow: auto;
+        transition: 1s ease-in;
+    }
+
+    .popup-success.activate {
+        visibility: visible;
+        opacity: .75;
+    }
     </style>
+    
     
     {% csrf_token %}
     {{location|json_script:'loc'}}
@@ -86,40 +86,49 @@
 
     <div id='map-container'></div>
 
-    {% comment %} <div class='popup-success' id='success'>
-        <div class='popup-intro-content' id='success'>
-            <h2 class='primary'>Playlist Created!</h2>
+    <div class='popup-success' id='success'>
+        {% comment %} <div class='popup-success-message'> {% endcomment %}
+        <div class='row center'>
+            <h4 class='primary'>Your playlist is ready!</h4>
         </div>
-    </div> {% endcomment %}
+    </div>
 
     <div class='popup-intro' id='intro'>
         <div class='popup-intro-content' id='intro'>
-            <div class='container'>
+            <div class='row center'>
+                <div class='col s12'>
+                    <ul class='tabs tabs-fixed-width z-depth-1'>
+                        <li class='tab col s3'><a href='#welcome-tab'>Weclome</a></li>
+                        <li class='tab col s3'><a href='#info-tab'>Info</a></li>
+                        <li class='tab col s3'><a href='#options-tab'>Options</a></li>
+                        <li class='tab col s3'><a href='#sources-tab'>Sources</a></li>
+                        <li class='tab col s3'><a href='#contact-tab'>Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class='container' id='welcome-tab'>
                 <div class='row center'>
                     <header class='header'>
                         <h2 class='primary'>Welcome To BandMap!</h2>
                         <h5 style='color: #8B2635'>A way to explore Bandcamp on a map.</h5>
+                        <p>On BandMap, each circle represents a city. The more artists there are in the city, the bigger the circle.
+                        Hovering over a city will let you know how many artists there are and which genres are most popular to make 
+                        in that city (not based on listener habits).</p>
+                        <p>In the Info tab you will find more details on what the menu buttons do. Go to options to filter which kinds of artists 
+                        populate the map, and choose the style of the map.</p>
                     </header>
                 </div>
-
-                <div class='row center'>
-                    <div class='col s12'>
-                        <ul class='tabs tabs-fixed-width z-depth-1'>
-                            <li class='tab col s3'><a href='#intro-tab'>Info</a></li>
-                            <li class='tab col s3'><a href='#sources-tab'>Sources</a></li>
-                            <li class='tab col s3'><a href='#contact-tab'>Contact</a></li>
-                        </ul>
-                    </div>
-                </div>
             </div>
-            <div class='container' id='intro-tab'>
+
+            <div class='container' id='info-tab'>
                 {% include 'includes/info.html' %}
             </div>
-
+            <div class='container' id='options-tab'>
+                {% include 'includes/options.html' %}
+            </div>
             <div class='container' id='sources-tab'>
                 {% include 'includes/sources.html' %}
             </div>
-
             <div class='container' id='contact-tab'>
                 {% include 'includes/contact.html' %}
             </div>
@@ -148,34 +157,37 @@
 
     <script>
 
+        document.addEventListener('mousemove', function(e) {
+            document.querySelector('.popup-intro-content').style.backgroundImage = `linear-gradient(${e.target.movementX}`
+        })
+
+        // close nav button
+        function closeNav() {
+            $('#sideFeats').css('width', '0');
+            $('#map-container').css('left','0')
+        }
+        // auto init materialize js
         M.AutoInit();
 
+        // info modal control
         function popupIntro() {
             if ($('#intro').hasClass('activate')) {
                 $('.popup-intro, .popup-intro-content').removeClass('activate')
-                console.log($('.popup-intro').attr('class'))
             } else {
-                console.log('ayy')
                 $('.popup-intro, .popup-intro-content').addClass('activate')
-                console.log($('.popup-intro').attr('class'))
             }
         };
 
         $('#open-intro').click(popupIntro);
 
-        document.addEventListener("click", e => {
-        if (e.target == document.querySelector(".popup-intro.activate")) {
+        document.addEventListener("click", function(e) {
+        if (e.target == document.querySelector(".popup-intro.activate") || e.target == document.querySelector('.popup-success.activate')) {
             document.querySelector(".popup-intro.activate").classList.remove('activate');
-            document.querySelector('.popup-intro-content').classList.remove('activate')
+            document.querySelector('.popup-intro-content').classList.remove('activate');
+            document.querySelector('.popup-success.activate').classList.remove('activate');
         }
         });
 
-        document.addEventListener("click", e => {
-        if (e.target == document.querySelector(".popup-intro.activate")) {
-            document.querySelector(".popup-success.activate").classList.remove('activate');
-            document.querySelector('.popup-intro-content').classList.remove('activate')
-        }
-        });
 
     </script>
 </body>

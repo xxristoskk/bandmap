@@ -1,10 +1,10 @@
-function closeNav() {
-  $('#sideFeats').css('width', '0');
-  $('#map-container').css('left', '0');
+// initialize global scope
+currentLocation = JSON.parse(document.getElementById('loc').textContent);
+if (!(localStorage.getItem('mapStyle'))) {
+  localStorage.setItem('mapStyle', 'mapbox://styles/mapbox/dark-v10')
 }
 
-currentLocation = JSON.parse(document.getElementById('loc').textContent);
-
+// finding and saving location
 if (!navigator.geolocation) {
   console.error(`Your browser doesn't support Geolocation`);
 };
@@ -27,37 +27,80 @@ function saveLocation(position) {
         'csrfmiddlewaretoken': csrftoken
     },
   });
-  setTimeout(function(){location.reload()}, 1500);
+  setTimeout(function(){location.reload()}, 1000);
 };
 
-console.log(currentLocation)
-
+// getting location from new browser session
 if (currentLocation.latitude == null) {
   getLocation()
 }
 
-
-
+// initialize mapbox options
 mapboxgl.accessToken = JSON.parse(document.getElementById('token').textContent).token;
 var initialZoom = 9;
 var initialCenter = [currentLocation.longitude, currentLocation.latitude]
+var mapStyle = localStorage.getItem('mapStyle')
 
-// create an object to hold the initialization options for a mapboxGL map
+
+document.getElementById('options').addEventListener('click', function(e) {
+  localStorage.setItem('mapStyle', e.target.value)
+})
+
 var initOptions = {
-  container: 'map-container', // put the map in this container
-  style: 'mapbox://styles/mapbox/dark-v10', // use this basemap
-  center: initialCenter, // initial view center
-  zoom: initialZoom, // initial view zoom level (0-18)
+  container: 'map-container',
+  style: mapStyle,
+  center: initialCenter,
+  zoom: initialZoom,
 }
 
 // create the new map
 var map = new mapboxgl.Map(initOptions);
 const geojson = JSON.parse(document.getElementById('geojson').textContent);
 
+
+/* MAPBOX CONTROLS */
+
 // add zoom and rotation controls to the map.
 map.addControl(new mapboxgl.NavigationControl());
 
+// search bar
+let searchBar = new MapboxGeocoder({
+  accessToken: mapboxgl.accessToken,
+  mapboxgl: mapboxgl
+})
 
+/* BUTTONS */
+
+// toggle new searchbar
+$('#addSearch').click(function() {
+  if (map.hasControl(searchBar)) {
+    map.removeControl(searchBar)
+  } else {
+    map.addControl(searchBar)
+  }
+})
+
+// gets the center of the new location and sends it back to populate a new map
+$('#newLocation').click(function() {
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  let newCenter = map.getCenter();
+  $.post({
+    url: 'new_location/',
+    data: {'new_location': newCenter, 'csrfmiddlewaretoken': csrftoken},
+    })
+  setTimeout(function(){location.reload()}, 700);
+});
+
+// button to get auth url and send the user to the auth page
+$('#spotifyAuth').click(function() {
+  fetch('spotify/auth/')
+    .then((response) => response.json())
+    .then((data) => {
+        window.location.replace(data.url,"_blank");
+  });
+})
+
+/* MAP STYLING */
 var circleRadius = ['step',['get','num_of_artists'],7,5,15,8,20,25,25,50,30,150,35];
 
 // wait for the initial style to Load
@@ -68,6 +111,7 @@ map.on('style.load', function() {
     data: geojson,
   });
 
+  // INITIAL LAYER
   map.addLayer({
     id: 'clusters',
     type: 'circle',
@@ -79,7 +123,7 @@ map.on('style.load', function() {
       'circle-opacity': 0.7,
     }
   });
-
+  // ADD GEOJSON TO MAP
   map.addSource('feature-highlight', {
     type: 'geojson',
     data: {
@@ -88,6 +132,7 @@ map.on('style.load', function() {
     }
   });
 
+  // HOVERED LAYER
   map.addLayer({
     id: 'clusters-highlight',
     type: 'circle',
@@ -100,49 +145,14 @@ map.on('style.load', function() {
       'circle-stroke-width': 2
     }
   });
-  
-  // adding and removing geocoder search bar
-  let searchBar = new MapboxGeocoder({
-    accessToken: mapboxgl.accessToken,
-    mapboxgl: mapboxgl
-  })
-
-  // toggle new searchbar
-  $('#addSearch').click(function() {
-    if (map.hasControl(searchBar)) {
-      map.removeControl(searchBar)
-    } else {
-      map.addControl(searchBar)
-    }
-  })
-
-  // gets the center of the new location and sends it back to populate a new map
-  $('#newLocation').click(function() {
-    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    let newCenter = map.getCenter();
-    console.log(newCenter)
-    $.post({
-      url: 'new_location/',
-      data: {'new_location': newCenter, 'csrfmiddlewaretoken': csrftoken},
-      })
-    setTimeout(function(){location.reload()}, 1500);
-  });
-
-  // button to get auth url and send the user to the auth page
-  $('#spotifyAuth').click(function() {
-    fetch('spotify/auth/')
-      .then((response) => response.json())
-      .then((data) => {
-          window.location.replace(data.url,"_blank");
-    });
-  })
-
   // Create a popup, but don't add it to the map yet.
   var popup = new mapboxgl.Popup({
     closeButton: false,
     closeOnClick: false,
     className: 'popup'
   });
+
+  /* MAP EVENTS */
 
   map.on('click', 'clusters', function (e) {
 
@@ -161,17 +171,21 @@ map.on('style.load', function() {
       sortedArtists.push({'name': artist.name})
     })
 
-    // sends back the selected artists to make a playlist
+    /* CREATE SPOTIFY PLAYLIST */
+
     $('#createPlaylist').click(function() {
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
       $.post({
         url: 'spotify/selected_artists/',
         data: {'artists': sortedArtists, 'city': selectedFeat.properties.city, 'csrfmiddlewaretoken': csrftoken},
-        // success: function() {
-        //   $('#success').addClass('activate')
-        // }
+        success: function() {
+          $('.popup-success').addClass('activate')
+          setTimeout(function(){$('.popup-success').removeClass('activate')}, 2000)
+        }
       })
     });
+
+    /* CITY DETAILS */
 
     artist_html = `
     <div class='row'>
@@ -184,7 +198,14 @@ map.on('style.load', function() {
     </div>
     <div class='divider'></div><br>`
 
+/*
+code for potentially embedding players at some point
 
+<div class='row valign-wrapper'>
+  <iframe style="border: 0; width: 100%; height: 42px;" src="https://bandcamp.com/EmbeddedPlayer/album=${artist.latest_release}/size=small/bgcol=ffffff/linkcol=7137dc/transparent=true/" seamless></iframe>
+</div>
+
+*/
     builder = (artist) => {
       artist_html += `
       <div class='row valign-wrapper'>
@@ -197,8 +218,11 @@ map.on('style.load', function() {
       </div>
       `
     };
-
+    
+    // bulids the list of artists in the sidebar
     artists.forEach(builder);
+
+    // animation for opening side panel
     $('#artists').html(artist_html);
     $('#sideFeats').css('width', '300px');
     $('#map-container').css('left', '300px');
@@ -214,6 +238,7 @@ map.on('style.load', function() {
 
     map.getCanvas().style.cursor = 'pointer';  // make the cursor a pointer
 
+    // coords and feats for popup and sidebar info
     var coordinates = features[0].geometry.coordinates.slice();
     let selectedFeat = e.features[0];
     
@@ -229,8 +254,10 @@ map.on('style.load', function() {
       </div>
     `;
 
+    // filling in the empty source for the highlighted city
     map.getSource('feature-highlight').setData(selectedFeat);
 
+    // popup for hovering over city
     popup.setLngLat(coordinates).setHTML(popup_html).addTo(map);
   });
 
