@@ -104,7 +104,7 @@ class MapView(View):
                     reply_to=[sender]
                 )
                 email.send()
-                return redirect('map')
+                return HttpResponseRedirect('')
 
         # filter form
         if 'filter' in self.request.POST:
