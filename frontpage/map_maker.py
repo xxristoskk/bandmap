@@ -1,3 +1,6 @@
+import geojson
+from geojson import FeatureCollection, Point, Feature
+
 class MapMaker():
     def __init__(self, mongo_collection):
         self.artists = mongo_collection

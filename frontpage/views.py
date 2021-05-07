@@ -76,7 +76,6 @@ class NewLocation(View):
 
 ## MongoDB search
 def search_db(region, genres, loc_lookup):
-    print(region)
     local_artists = coll.find({
                 'latitude': {'$exists':True},
                 'location':{'$regex':f'({region})'},
@@ -217,7 +216,6 @@ class MapView(View):
                     local_artists.extend(list(additional_artists))
                 else:
                     local_artists = list(local_artists)
-            print(f'This is the length of local artists: {len(local_artists)}')
 
             # using the results from the mongodb query to build the geojson and build context
             user_map = MapMaker(local_artists)
