@@ -1,8 +1,3 @@
-import geojson
-from geojson import FeatureCollection, Point, Feature
-
-
-
 class MapMaker():
     def __init__(self, mongo_collection):
         self.artists = mongo_collection
@@ -18,11 +13,14 @@ class MapMaker():
         collection = FeatureCollection(features)
         return collection
     
-    
     def point_properties(self):
         points = {}
         case = []
         for artist in self.artists:
+            try:
+                latest = artist['latest_release']
+            except:
+                latest = None
             genres = [x for x in artist['genres'] if x not in artist['location'].split(', ')]
             if not genres:
                 genres = ['empty']
@@ -36,7 +34,8 @@ class MapMaker():
                         {
                             'name': artist['artist_name'].title(),
                             'genre': genres[0],
-                            'bc_url': artist['bc_url']
+                            'bc_url': artist['bc_url'],
+                            'latest_release': latest
                         }
                     ]
                 }
@@ -47,7 +46,8 @@ class MapMaker():
                 points[long_lat]['artists'].append({
                         'name': artist['artist_name'].title(),
                         'genre': genres[0],
-                        'bc_url': artist['bc_url']
+                        'bc_url': artist['bc_url'],
+                        'latest_release': latest
                     })
         for point in points.keys():
             genres = points[point]['genres']

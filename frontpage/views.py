@@ -74,6 +74,35 @@ class NewLocation(View):
         user.save(update_fields=['latitude','longitude'])
         return redirect('frontpage:map')
 
+## MongoDB search
+def search_db(region, genres, loc_lookup):
+    print(region)
+    local_artists = coll.find({
+                'latitude': {'$exists':True},
+                'location':{'$regex':f'({region})'},
+                'genres':{'$all':genres}
+                })
+    if local_artists.count() < 10:
+        local_artists = list(local_artists)
+        try:
+            region = loc_lookup.raw['address']['state'].lower()
+            additional_artists = coll.find({
+                'latitude':{'$exists':True},
+                'location':{'$regex':f'({region.lower()})'},
+                'genres': {'$all':genres}
+                })
+        except:
+            region = loc_lookup.raw['address']['city'].lower()
+            additional_artists = coll.find({
+                'latitude':{'$exists':True},
+                'location':{'$regex':f'(, {region.lower()})'},
+                'genres': {'$all':genres}
+                })
+        local_artists.extend(list(additional_artists))
+    else:
+        local_artists = list(local_artists)
+    return local_artists
+    
 # main map view
 class MapView(View):
     template_name = 'index.html'
@@ -166,30 +195,10 @@ class MapView(View):
             ## if user defined a genre filter
             if user[0].genre1 != None:
                 genres = [user[0].genre1.lower()]
-                print(genres)
-                local_artists = coll.find({
-                    'latitude': {'$exists':True},
-                    'location':{'$regex':f'({region})'},
-                    'genres':{'$all':genres}
-                    })
-                if local_artists.count() < 50:
-                    local_artists = list(local_artists)
-                    try:
-                        region = loc_lookup.raw['address']['state'].lower()
-                        additional_artists = coll.find({
-                            'latitude':{'$exists':True},
-                            'location':{'$regex':f'({region.lower()})'},
-                            'genres':{'$all':[user[0].genre1, user[0].genre2]}
-                            })
-                    except:
-                        region = loc_lookup.raw['address']['city'].lower()
-                        additional_artists = coll.find({
-                            'latitude':{'$exists':True},
-                            'location':{'$regex':f'(, {region.lower()})'},
-                            'genres':{'$all':[user[0].genre1, user[0].genre2]}
-                            })
-                    local_artists.extend(list(additional_artists))
-
+                if user[0].genre2 != None:
+                    genres.append(user[0].genre2.lower())
+                local_artists = search_db(region, genres, loc_lookup)
+                
             ## if user didn't define a genre filter
             else:
                 local_artists = coll.find(
@@ -206,6 +215,9 @@ class MapView(View):
                         region = loc_lookup.raw['address']['city'].lower()
                         additional_artists = coll.find({'latitude':{'$exists':True},'location':{'$regex':f'(, {region.lower()})'}})
                     local_artists.extend(list(additional_artists))
+                else:
+                    local_artists = list(local_artists)
+            print(f'This is the length of local artists: {len(local_artists)}')
 
             # using the results from the mongodb query to build the geojson and build context
             user_map = MapMaker(local_artists)
@@ -216,7 +228,8 @@ class MapView(View):
                 'sp_token': sp_token,
                 'mapbox': {'token': 'pk.eyJ1IjoieHJpc3Rvc2siLCJhIjoiY2s3cXdhMGR5MDgxdjNlbXZjaGdkczNkcCJ9.Fu-hNW-oYVvXmSxbmbVjQA'},
                 'contact_form': self.contact_form_class,
-                'filter_form': self.filter_form_class(instance=user[0])
+                'filter_form': self.filter_form_class(instance=user[0]),
+                'first_visit': False
             }
             return render(self.request, self.template_name, context=context)
         # set everything blank if new session
@@ -227,6 +240,7 @@ class MapView(View):
                 'sp_token': sp_token,
                 'mapbox': {'token': 'pk.eyJ1IjoieHJpc3Rvc2siLCJhIjoiY2s3cXdhMGR5MDgxdjNlbXZjaGdkczNkcCJ9.Fu-hNW-oYVvXmSxbmbVjQA'},
                 'contact_form': self.contact_form_class,
-                'filter_form': self.filter_form_class(instance=user[0])
+                'filter_form': self.filter_form_class(instance=user[0]),
+                'first_visit': True
             }
             return render(self.request, self.template_name, context=context)

@@ -1,9 +1,5 @@
-// initialize global scope
+// initialize cached location (none if new session)
 currentLocation = JSON.parse(document.getElementById('loc').textContent);
-
-if (!(localStorage.getItem('mapStyle'))) {
-  localStorage.setItem('mapStyle', 'mapbox://styles/mapbox/dark-v10')
-}
 
 // finding and saving location
 if (!navigator.geolocation) {
@@ -28,7 +24,14 @@ function saveLocation(position) {
         'csrfmiddlewaretoken': csrftoken
     },
   });
-  setTimeout(function(){location.reload()}, 1000);
+  setTimeout(function(){
+    document.querySelector('.popup-intro').classList.add('activate')
+    document.querySelector('.popup-intro-content').classList.add('activate')
+    // button to start app
+    document.querySelector('#myLocation').addEventListener('click', function() {
+      location.reload()
+    })
+  }, 500);
 };
 
 // getting location from new browser session
@@ -36,15 +39,33 @@ if (currentLocation.latitude == null) {
   getLocation()
 }
 
+/* TOGGLE MAP STYLE */
+var optionDark = document.querySelector("[value='mapbox://styles/mapbox/dark-v10']")
+var optionLight = document.querySelector("[value='mapbox://styles/mapbox/light-v10']")
+
+if (!(localStorage.getItem('mapStyle'))) {
+  localStorage.setItem('mapStyle', 'mapbox://styles/mapbox/dark-v10')
+  optionDark.setAttribute('selected','selected')
+  var mapStyle = localStorage.getItem('mapStyle')
+} else {
+  var mapStyle = localStorage.getItem('mapStyle')
+}
+
 // initialize mapbox options
 mapboxgl.accessToken = JSON.parse(document.getElementById('token').textContent).token;
 var initialZoom = 9;
 var initialCenter = [currentLocation.longitude, currentLocation.latitude]
-var mapStyle = localStorage.getItem('mapStyle')
 
 
 document.getElementById('changeStyle').addEventListener('change', function(e) {
   localStorage.setItem('mapStyle', e.target.value)
+  if (e.target.value == 'mapbox://styles/mapbox/dark-v10') {
+    optionDark.setAttribute('selected','selected')
+    optionLight.removeAttribute('selected','selected')
+  } else {
+    optionLight.setAttribute('selected','selected')
+    optionDark.setAttribute('selected','selected')
+  }
   location.reload()
 })
 
@@ -182,23 +203,23 @@ map.on('style.load', function() {
         data: {'artists': sortedArtists, 'city': selectedFeat.properties.city, 'csrfmiddlewaretoken': csrftoken},
         success: function() {
           $('.popup-success').addClass('activate')
-          setTimeout(function(){$('.popup-success').removeClass('activate')}, 3000)
+          setTimeout(function(){$('.popup-success').removeClass('activate')}, 2000)
         }
       })
     });
 
     /* CITY DETAILS */
 
-    artist_html = `
+    city_html = `
     <div class='row'>
       <div class='col s6 left'>
-        <h4 class='header white-text'>${selectedFeat.properties.city}</h4>
+        <h4 class='header' style='color: #8B2635;'>${selectedFeat.properties.city}</h4>
       </div>
       <div class='col s6 right'>
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="javascript:void(0)" style='color: grey;' class="closebtn" onclick="closeNav()">&times;</a>
       </div>
     </div>
-    <div class='divider'></div><br>`
+    `
 
 /*
 code for potentially embedding players at some point
@@ -208,26 +229,58 @@ code for potentially embedding players at some point
 </div>
 
 */
-    builder = (artist) => {
-      artist_html += `
-      <div class='row valign-wrapper'>
-        <div class='col s6'>
-          <a href='${artist.bc_url}' target="_blank" rel="noopener noreferrer">${artist.name}</a>
-        </div>
-        <div class='col s6'>
-          <span class='right'>${artist.genre}</span>
-        </div>
-      </div>
-      `
-    };
-    
+
     // bulids the list of artists in the sidebar
+    artist_html = ``
+    builder = (artist) => {
+      if (artist.latest_release) {
+        if (artist.latest_release.type == 'track') {
+          artist_html += `
+          <li>
+            <div class='collapsible-header'>${artist.name}</div>
+            <div class='collapsible-body'>
+              <div class='row right-align'><a href='${artist.bc_url}' target="_blank" rel="noopener noreferrer">Bandcamp Page</a></div>
+              <div class='row right-align'><span class='primary'>${artist.genre}</span></div>
+              <div class='row valign-wrapper'>
+                <iframe style="border: 0; width: 100%; height: 42px;" src="https://bandcamp.com/EmbeddedPlayer/track=${artist.latest_release.id}/size=small/bgcol=ffffff/linkcol=7137dc/transparent=true/" seamless></iframe>
+              </div>
+            </div>
+          </li>
+          `
+        } else if (artist.latest_release.type == 'album') {
+          artist_html += `
+          <li>
+            <div class='collapsible-header'>${artist.name}</div>
+            <div class='collapsible-body'>
+              <div class='row right-align'><a href='${artist.bc_url}' target="_blank" rel="noopener noreferrer">Bandcamp Page</a></div>
+              <div class='row right-align'><span class='primary'>${artist.genre}</span></div>
+              <div class='row valign-wrapper'>
+                <iframe style="border: 0; width: 100%; height: 42px;" src="https://bandcamp.com/EmbeddedPlayer/album=${artist.latest_release.id}/size=small/bgcol=ffffff/linkcol=7137dc/transparent=true/" seamless></iframe>
+              </div>
+            </div>
+          </li>
+          `
+        }
+      } else {
+          artist_html += `
+          <li>
+            <div class='collapsible-header'>${artist.name}</div>
+            <div class='collapsible-body'>
+              <div class='row right-align'><a href='${artist.bc_url}' target="_blank" rel="noopener noreferrer">Bandcamp Page</a></div>
+              <div class='row right-align'><span class='primary'>${artist.genre}</span></div>
+            </div>
+          </li>
+          `
+      }
+    };
     artists.forEach(builder);
 
     // animation for opening side panel
+    $('#city').html(city_html)
     $('#artists').html(artist_html);
     $('#sideFeats').css('width', '300px');
     $('#map-container').css('left', '300px');
+
   });
 
   // listen for the mouse moving over the map and react when the cursor is over our data
