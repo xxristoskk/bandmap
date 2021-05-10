@@ -163,7 +163,7 @@
     <div id='sideFeats' class='sidebar'>
         {% csrf_token %}
         <div id='city'></div>
-        <ul id='artists' class='collapsible popout'></ul>
+        <ul id='artists' class='collapsible expandable'></ul>
     </div>
 
     <div class='fixed-action-btn'>
@@ -188,6 +188,7 @@
         })
 
         // close sidenav button
+        /* REMOVE JQUERY IN FUTURE */
         function closeNav() {
             $('#sideFeats').css('width', '0');
             $('#map-container').css('left','0')
@@ -197,6 +198,7 @@
 
         // info modal control
         function popupIntro() {
+            /* REMOVE JQUERY IN FUTURE */
             if ($('#intro').hasClass('activate')) {
                 $('.popup-intro, .popup-intro-content').removeClass('activate')
             } else {

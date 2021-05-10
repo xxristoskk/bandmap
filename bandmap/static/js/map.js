@@ -95,6 +95,7 @@ let searchBar = new MapboxGeocoder({
 /* BUTTONS */
 
 // toggle new searchbar
+/* REMOVE JQUERY IN FUTURE */
 $('#addSearch').click(function() {
   if (map.hasControl(searchBar)) {
     map.removeControl(searchBar)
@@ -104,6 +105,7 @@ $('#addSearch').click(function() {
 })
 
 // gets the center of the new location and sends it back to populate a new map
+/* REMOVE JQUERY IN FUTURE */
 $('#newLocation').click(function() {
   const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
   let newCenter = map.getCenter();
@@ -115,6 +117,7 @@ $('#newLocation').click(function() {
 });
 
 // button to get auth url and send the user to the auth page
+/* REMOVE JQUERY IN FUTURE */
 $('#spotifyAuth').click(function() {
   fetch('spotify/auth/')
     .then((response) => response.json())
@@ -198,6 +201,7 @@ map.on('style.load', function() {
 
     $('#createPlaylist').click(function() {
       const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      /* REMOVE JQUERY IN FUTURE */
       $.post({
         url: 'spotify/selected_artists/',
         data: {'artists': sortedArtists, 'city': selectedFeat.properties.city, 'csrfmiddlewaretoken': csrftoken},
@@ -274,7 +278,8 @@ code for potentially embedding players at some point
       }
     };
     artists.forEach(builder);
-
+    
+    /* REMOVE JQUERY IN FUTURE */
     // animation for opening side panel
     $('#city').html(city_html)
     $('#artists').html(artist_html);
