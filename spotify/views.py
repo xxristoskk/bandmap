@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect
-from django.views import View
+from django.shortcuts import redirect
 from django.utils import timezone
 from datetime import timedelta
 from frontpage.playlist_creator import MakePlaylist
 from .models import SpotifyToken
+import os
 
 # rest framework imports
 from rest_framework.response import Response
@@ -15,8 +15,6 @@ from rest_framework.views import APIView
 import spotipy
 from spotipy.cache_handler import CacheHandler
 from spotipy.oauth2 import SpotifyOAuth
-
-import os
 
 client_id = os.environ['SPOTIFY_ID']
 client_secret = os.environ['SPOTIFY_SECRET']

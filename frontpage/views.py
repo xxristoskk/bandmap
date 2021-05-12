@@ -1,5 +1,6 @@
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse
 from django.views import View
+from rest_framework.views import APIView
 from .models import SessionMap
 import os
 
