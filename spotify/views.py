@@ -32,7 +32,7 @@ def validate_tokens(session_user):
         cache_handler=CustomCacheHandler(session_user),
         show_dialog=True
     )
-    # check to see if token is expired
+    # takes a session id and checks to see if it has expired token
     token_info = SpotifyToken.objects.filter(session_user=session_user)[0]
     expiration = token_info.expires_in
     if expiration <= timezone.now():
@@ -41,25 +41,18 @@ def validate_tokens(session_user):
         return spotipy.Spotify(auth=token)
     else:
         return spotipy.Spotify(auth=token_info.access_token)
+        
 
-class PlaylistMaker(View):
+
+class PlaylistMaker(APIView):
     def post(self, *args, **kwargs):
         # find spotify token associated with session
         token = SpotifyToken.objects.filter(session_user=self.request.session.session_key)[0]
 
         #get the data from POST
-        data = self.request.POST
-        case = []
-        artists = []
-        city = data.dict()['city']
-        for k,v in data.items():
-            if k.lower() != 'csrfmiddlewaretoken' and k.lower() != 'city':
-                case.append(v)
-
-        # making sure there are no duplicate artists
-        case = list(set(case))
-        for x in range(0,len(case)):
-            artists.append({'artist_name':case[x]})
+        data = self.request.data
+        artists = data['artists']
+        city = data['city']
 
         #get the access token
         sp = validate_tokens(token.session_user)
@@ -70,7 +63,6 @@ class PlaylistMaker(View):
         track_ids = playlist_maker.search_artists(artists)
         playlist_id = playlist_maker.get_playlist_id(f"{city.title()} BandMap Playlist")
         playlist_maker.create_playlist(track_ids, playlist_id)
-        del case
         return redirect('frontpage:map')
 
 # spotipy defaults to storing cached tokens to a cache file
@@ -114,11 +106,8 @@ class AuthURL(APIView):
         auth_url = oauth.get_authorize_url()
         return Response({'url': auth_url}, status=status.HTTP_200_OK)
 
+# callback function for Spotify API redirect
 def callback(request):
-    ### this is where the session info gets attched to token
-    if not request.session.exists(request.session.session_key):
-        request.session.create()
-
     oauth = SpotifyOAuth(
         client_id=client_id,
         client_secret=client_secret,
@@ -128,11 +117,13 @@ def callback(request):
         show_dialog=True
     )
 
+    # get the access token and search for the current session user
     code = oauth.parse_response_code(request.build_absolute_uri())
     token_info = oauth.get_access_token(code)
     expires_in = timezone.now() + timedelta(seconds=token_info['expires_in'])
     session_token = SpotifyToken.objects.filter(session_user=request.session.session_key)
 
+    # saves the token to associated session user
     if session_token.exists():
         token = session_token[0]
         token.access_token = token_info['access_token']
@@ -147,5 +138,5 @@ def callback(request):
             expires_in=expires_in
         )
         token.save()
-
+    
     return redirect('frontpage:map')

@@ -1,5 +1,5 @@
 a {
-    color: #5bb5ff;
+    color: #ff5c5c;
 }
 
 .sidebar {
@@ -10,8 +10,16 @@ a {
     bottom: 0;
     overflow-x: hidden; 
     padding-top: 60px;
-    transition: 1s;
-    background: black;
+    transition: 0.8s;
+    opacity: .97;
+    background: radial-gradient(ellipse at 100% 50%, #000 18%, #000000 26%, #68004e 100%), linear-gradient(360deg, #000000 0%, #000066 73.89%);
+    background-blend-mode: lighten, normal; 
+    scrollbar-color: black #1a237e;
+    scrollbar-width: auto;
+}
+
+.sidebar p {
+    color: white;
 }
 
 .sidebar .closebtn {
@@ -76,7 +84,7 @@ a {
 
 .mapboxgl-popup-content-wrapper {
     padding: 1%;
-    background: black;
+    background: rgb(230, 107, 128);
 }
 
 .mapboxgl-popup-content h3 {
@@ -90,6 +98,13 @@ a {
     margin-top: -15px;
 }
 
+.mapboxgl-popup-content {
+    background: rgb(230, 107, 128) !important;
+    box-shadow: rgb(230, 107, 128) !important;
+    border-color: rgb(230, 107, 128) !important;
+    opacity: .97;
+}
+
 .mapboxgl-popup-content h4 {
     margin: 0;
     display: block;
@@ -97,8 +112,13 @@ a {
     font-weight: 400;
 }
 
+.mapboxgl-popup-tip {
+    border-color: rgb(230, 107, 128);
+}
+
 .mapboxgl-popup-content div {
     padding: 10px;
+    border-radius: 3px;
     background: black;
 }
 
@@ -106,11 +126,23 @@ a {
     cursor: pointer;
 }
 
-.mapboxgl-popup-anchor-top > .mapboxgl-popup-content {
-    margin-top: 15px;
-    background: black;
-}
-
-.mapboxgl-popup-anchor-top > .mapboxgl-popup-tip {
-    border-bottom-color: #536dfe;
-}
+.mapboxgl-popup-anchor-top .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
+    border-bottom-color: rgb(230, 107, 128) !important;
+    opacity: .97;
+    }
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
+    border-top-color: rgb(230, 107, 128) !important;
+    opacity: .97;
+    }
+.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+    border-right-color: rgb(230, 107, 128) !important;
+    opacity: .97;
+    }
+.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+    border-left-color: rgb(230, 107, 128) !important;
+    opacity: .97;
+    }
