@@ -99,9 +99,6 @@
     <div id='sideFeats' class='sidebar'>
         {% csrf_token %}
         <div id='city'></div>
-<<<<<<< HEAD
-        <ul id='artists' class='collapsible expandable'></ul>
-=======
         <ul class='tabs tabs-fixed-width' style='overflow-x: hidden;'>
             <li class='tab col s6'><a href='#artists-tab' class='active'>Artists</a></li>
             <li class='tab col s6'><a href='#city-tab'>City Stats</a></li>
@@ -112,7 +109,6 @@
         <div class='container' id='artists-tab'>
             <ul id='artists' class='collapsible expandable'></ul>
         </div>
->>>>>>> staging
     </div>
 
     <div class='fixed-action-btn'>
@@ -151,17 +147,7 @@
 
     <script>
 
-<<<<<<< HEAD
-
-        document.addEventListener('mousemove', function(e) {
-            document.querySelector('.popup-intro-content').style.backgroundImage = `linear-gradient(${e.target.movementX}`
-        })
-
-        // close sidenav button
-        /* REMOVE JQUERY IN FUTURE */
-=======
         // CLOSE SIDEFEATS
->>>>>>> staging
         function closeNav() {
             document.querySelector('#sideFeats').style.width = '0'
             document.querySelector('#map-container').style.left = '0'
@@ -179,15 +165,9 @@
             
         // OPEN POPUP
         function popupIntro() {
-<<<<<<< HEAD
-            /* REMOVE JQUERY IN FUTURE */
-            if ($('#intro').hasClass('activate')) {
-                $('.popup-intro, .popup-intro-content').removeClass('activate')
-=======
             if (document.querySelector('#intro').classList.contains('activate')) {
                 document.querySelector(".popup-intro.activate").classList.remove('activate')
                 document.querySelector('.popup-intro-content').classList.remove('activate');
->>>>>>> staging
             } else {
                 document.querySelector(".popup-intro").classList.add('activate')
                 document.querySelector('.popup-intro-content').classList.add('activate');

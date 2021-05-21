@@ -156,43 +156,6 @@ let searchBar = new MapboxGeocoder({
   mapboxgl: mapboxgl
 })
 
-<<<<<<< HEAD
-/* BUTTONS */
-
-// toggle new searchbar
-/* REMOVE JQUERY IN FUTURE */
-$('#addSearch').click(function() {
-  if (map.hasControl(searchBar)) {
-    map.removeControl(searchBar)
-  } else {
-    map.addControl(searchBar)
-  }
-})
-
-// gets the center of the new location and sends it back to populate a new map
-/* REMOVE JQUERY IN FUTURE */
-$('#newLocation').click(function() {
-  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-  let newCenter = map.getCenter();
-  $.post({
-    url: 'new_location/',
-    data: {'new_location': newCenter, 'csrfmiddlewaretoken': csrftoken},
-    })
-  setTimeout(function(){location.reload()}, 700);
-});
-
-// button to get auth url and send the user to the auth page
-/* REMOVE JQUERY IN FUTURE */
-$('#spotifyAuth').click(function() {
-  fetch('spotify/auth/')
-    .then((response) => response.json())
-    .then((data) => {
-        window.location.replace(data.url,"_blank");
-  });
-})
-
-=======
->>>>>>> staging
 /* MAP STYLING */
 var circleRadius = ['step',['get','num_of_artists'],7,5,15,8,20,25,25,50,30,150,35];
 
@@ -275,18 +238,6 @@ map.on('style.load', function() {
       setTimeout(function(){document.querySelector('.popup-success.activate').classList.remove('activate')}, 2000)
     }
 
-<<<<<<< HEAD
-    $('#createPlaylist').click(function() {
-      const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-      /* REMOVE JQUERY IN FUTURE */
-      $.post({
-        url: 'spotify/selected_artists/',
-        data: {'artists': sortedArtists, 'city': selectedFeat.properties.city, 'csrfmiddlewaretoken': csrftoken},
-        success: function() {
-          $('.popup-success').addClass('activate')
-          setTimeout(function(){$('.popup-success').removeClass('activate')}, 2000)
-        }
-=======
     if (document.body.contains(document.querySelector('#createPlaylist'))) {
       document.getElementById('createPlaylist').addEventListener('click', function() {
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
@@ -298,7 +249,6 @@ map.on('style.load', function() {
           headers: {'X-CSRFToken': csrftoken, 'content-type': 'application/json'}
           })
         .then(data => {if (data.status == '200') {successPlaylist()}})
->>>>>>> staging
       })
     }
 
@@ -382,15 +332,6 @@ map.on('style.load', function() {
       }
     };
     artists.forEach(builder);
-<<<<<<< HEAD
-    
-    /* REMOVE JQUERY IN FUTURE */
-    // animation for opening side panel
-    $('#city').html(city_html)
-    $('#artists').html(artist_html);
-    $('#sideFeats').css('width', '300px');
-    $('#map-container').css('left', '300px');
-=======
 
     // PAGINATION
     // function paginate() {
@@ -410,7 +351,6 @@ map.on('style.load', function() {
     document.querySelector('#cityStats').innerHTML = city_stats
     document.querySelector('#sideFeats').style.width = '300px'
     document.querySelector('#map-container').style.left = '300px'
->>>>>>> staging
 
   });
 
