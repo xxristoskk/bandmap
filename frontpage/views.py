@@ -70,7 +70,10 @@ def search_db(region, genres, loc_lookup):
                 'location':{'$regex':f'(, {region.lower()})'},
                 'genres': {'$all':genres}
                 })
-        local_artists.extend(list(additional_artists))
+        if additional_artists.count() < 10:
+            pass
+        elif additional_artists.count() >= 10:
+            local_artists.extend(list(additional_artists))
     else:
         local_artists = list(local_artists)
     return local_artists
