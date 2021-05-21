@@ -13,13 +13,16 @@
         {% csrf_token %}
         <div class='input-field col s12 l6'>
                 {{filter_form.genre1}}
-            <label>Genre Filters</label>
+            <label>Genre 1</label>
         </div>
         <div class='input-field col s12 l6'>
                 {{filter_form.genre2}}
+            <label>Genre 2</label>
         </div>
+        {% comment %} 
+
         <div class='row'>
-            Black Bandcamp Only
+            Big Map Mode
             <div class='switch'>
                 <label>
                 Off
@@ -28,7 +31,9 @@
                 On
                 </label>
             </div>
-        </div>
+        </div> 
+        
+        {% endcomment %}
         <button class='btn red' type='submit' name='filter' id='options'>Save</button>
     </form>
 </div>

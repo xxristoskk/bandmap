@@ -23,7 +23,10 @@ if (navigator.geolocation) {
   document.querySelector('#message').textContent = "Browser doesn't support Geolocation";
   }
 };
+
 function saveLocation(position) {
+  // PRELOAD ANIMATION HERE
+  document.querySelector(".preload").classList.add('activate')
   const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
   const data = {
     'longitude': position.coords.longitude,
@@ -36,16 +39,18 @@ function saveLocation(position) {
     headers: {'X-CSRFToken': csrftoken, 'content-type':'application/json'}
   })
   .then(data => {
-    if (data.status == '200' && currentLocation == null) {
-      setTimeout(function(){
-        document.querySelector('.popup-intro').classList.add('activate')
-        document.querySelector('.popup-intro-content').classList.add('activate')
+    
+    console.log('Fetch is made')
+    if (data.status == '200' && currentLocation.latitude == null) {
+      // remove preload animation
+      document.querySelector('.preload').classList.remove('activate')
 
-        // button to start app
-        document.querySelector('#myLocation').addEventListener('click', function() {
-          location.reload()
-        })
-      }, 500);
+      // open popup
+      document.querySelector('.popup-intro').classList.add('activate')
+      document.querySelector('.popup-intro-content').classList.add('activate')
+      
+    } else {
+      alert('There was an error! Try refreshing the page')
     }
   })
 };
@@ -71,7 +76,7 @@ document.querySelector('#newLocation').addEventListener('click', function() {
   const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
   let newCenter = map.getCenter();
   const data = {'new_location': newCenter}
-
+  document.querySelector(".preload").classList.add('activate')
   fetch('new_location/',{
     method: 'POST',
     body: JSON.stringify(data),
@@ -79,7 +84,10 @@ document.querySelector('#newLocation').addEventListener('click', function() {
   })
   .then(data => {
     if (data.status == '200') {
-      setTimeout(function(){location.reload()}, 700);
+      setTimeout(function(){
+        document.querySelector(".preload").classList.remove('activate')
+        location.reload()
+      }, 700);
     }
   })
 });
@@ -224,12 +232,12 @@ map.on('style.load', function() {
       sortedArtists.push({'name': artist.name})
     })
 
+    /* CREATE SPOTIFY PLAYLIST */
     function successPlaylist() {
       document.querySelector('.popup-success').classList.add('activate')
       setTimeout(function(){document.querySelector('.popup-success.activate').classList.remove('activate')}, 2000)
     }
 
-    /* CREATE SPOTIFY PLAYLIST */
     if (document.body.contains(document.querySelector('#createPlaylist'))) {
       document.getElementById('createPlaylist').addEventListener('click', function() {
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
@@ -326,16 +334,16 @@ map.on('style.load', function() {
     artists.forEach(builder);
 
     // PAGINATION
-    function paginate() {
-      pageSize = 25
-      totalPages = getNumberOfPages()
-      for (i=1; i <= totalPages; i++) {
+    // function paginate() {
+    //   pageSize = 25
+    //   totalPages = getNumberOfPages()
+    //   for (i=1; i <= totalPages; i++) {
 
-      }
-    }
-    function getNumberOfPages() {
-      return Math.ceil(artists.length / 25)
-    }
+    //   }
+    // }
+    // function getNumberOfPages() {
+    //   return Math.ceil(artists.length / 25)
+    // }
 
     // OPEN SIDENAV
     document.querySelector('#city').innerHTML = city_html

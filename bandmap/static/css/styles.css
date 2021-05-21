@@ -2,6 +2,95 @@ a {
     color: #ff5c5c;
 }
 
+.preload {
+    visibility: hidden;
+    position: absolute;
+    height: 100%;
+    width: 100%
+}
+
+.preload-center {
+    width: 50%;
+    height: 50%;
+    position: absolute;
+    margin: auto;
+    top: 30%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+}
+
+.preload.activate {
+    visibility: visible;
+}
+
+.popup-intro {
+    background: #8A8394;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    visibility: hidden;
+    opacity: 0;
+    transition: .5s ease-in;
+    align-items: center;
+    justify-content: center;
+    scrollbar-color: black #1a237e;
+    scrollbar-width: auto;
+}
+
+.popup-intro-content {
+    position: relative;
+    width: 700px;
+    height: 530px;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #000066 0%, #8a89cd 0%, #000066 0%, #000066 0%, #8a89cd 0%, #000066 0%, #000066 0%, #8a89cd 0%, #000066 0%, #000066 0%, #8a89cd 0%, #000066 0%, #000066 13%, #8a89cd 74%, #000066 100%), radial-gradient(ellipse at 50% 50%, #000066 0%, #a10031 43%, #000066 72%);
+    background-blend-mode: lighten, soft-light; 
+    visibility: hidden;
+    opacity: 0;
+    overflow: auto;
+    transition: .5s ease-in;
+    color: white;
+    scrollbar-color: black #1a237e;
+    scrollbar-width: auto;
+}
+
+.popup-intro-content.activate {
+    visibility: visible;
+    opacity: 1;
+}
+
+.popup-intro.activate {
+    visibility: visible;
+    opacity: .95;
+}
+
+.popup-links {
+    color: #268c4a;
+}
+
+.popup-success {
+    top: 50px;
+    left: 500px;
+    position: fixed;
+    width: 480px;
+    height: 100px;
+    border-radius: 13px;
+    background: black;
+    visibility: hidden;
+    opacity: 0;
+    overflow: auto;
+    transition: 1s ease-in;
+}
+
+.popup-success.activate {
+    visibility: visible;
+    opacity: .75;
+}
+
 .sidebar {
     width: 0; 
     position: fixed;

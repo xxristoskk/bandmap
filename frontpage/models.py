@@ -13,10 +13,18 @@ class SessionMap(models.Model):
         ('AMBIENT', 'Ambient'),
         ('TECHNO', 'Techno'),
         ('DUBSTEP', 'Dubstep'),
-        ('DRUM N BASS', 'Drum & Bass'),
+        ('DRUM N BASS', 'Drum n Bass'),
         ('POP', 'Pop'),
+        ('FUTURE','Future'),
+        ('DIY', 'DIY'),
+        ('STONER', 'Stoner'),
+        ('ACID', 'Acid'),
+        ('DOWNTEMPO', 'Downtempo'),
+        ('DEEP', 'Deep'),
+        ('CONTEMPORARY', 'Contemporary'),
         ('FOLK', 'Folk'),
         ('PSYCH', 'Psychedelic'),
+        ('JUNGLE', 'Jungle'),
         ('LOFI', 'Lo-Fi'),
         ('NOISE', 'Noise'),
         ('HARDCORE', 'Hardcore'),
@@ -26,8 +34,9 @@ class SessionMap(models.Model):
         ('EXP', 'Experimental'),
         ('HOUSE', 'House'),
         ('TRANCE', 'Trance'),
-        ('ACOUSTICE', 'Acoustice'),
-        ('NONE', 'None')
+        ('ACOUSTIC', 'Acoustic'),
+        ('JUKE', 'Juke'),
+        ('FOOTWORK', 'Footwork')
     ]
 
     genre1 = models.CharField(max_length=15, choices=GENRE_CHOICES, blank=True, null=True)
@@ -35,3 +44,6 @@ class SessionMap(models.Model):
     session_user = models.CharField(max_length=100, unique=True)
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
+
+    class Meta:
+        ordering = ['genre1','genre2']
