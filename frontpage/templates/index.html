@@ -15,81 +15,10 @@
 <body>
     <style>
     @font-face {
-        font-family: "Exo";
-        src: url("{% static 'fonts/Exo-VariableFont_wght.ttf'%}");
-    }
-
-    .popup-intro {
-        background: gray;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        display: flex;
-        visibility: hidden;
-        opacity: 0;
-        transition: .7s ease-in;
-        align-items: center;
-        justify-content: center;
-        scrollbar-color: black #1a237e;
-        scrollbar-width: auto;
-    }
-
-    .popup-intro-content {
-        position: relative;
-        width: 700px;
-        height: 530px;
-        border-radius: 10px;
-        background: rgb(2,0,36);
-        background: -moz-linear-gradient(180deg, rgba(2,0,36,1) 3%, rgba(197,205,255,1) 80%, rgba(138,143,189,0) 100%);
-        background: -webkit-linear-gradient(180deg, rgba(2,0,36,1) 3%, rgba(197,205,255,1) 80%, rgba(138,143,189,0) 100%);
-        background: linear-gradient(180deg, rgba(2,0,36,1) 3%, rgba(197,205,255,1) 90%, rgba(138,143,189,0) 100%);
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#020024",endColorstr="#8a8fbd",GradientType=1);
-        visibility: hidden;
-        opacity: 0;
-        overflow: auto;
-        transition: .7s ease-in;
-        color: white;
-        scrollbar-color: black #1a237e;
-        scrollbar-width: auto;
-    }
-
-    .popup-intro-content.activate {
-        visibility: visible;
-        opacity: 1;
-    }
-
-    .popup-intro.activate {
-        visibility: visible;
-        opacity: .9;
-    }
-
-    .popup-links {
-        color: #268c4a;
-    }
-
-    .popup-success {
-        top: 50px;
-        left: 500px;
-        position: fixed;
-        width: 480px;
-        height: 100px;
-        border-radius: 13px;
-        background: black;
-        visibility: hidden;
-        opacity: 0;
-        overflow: auto;
-        transition: 1s ease-in;
-    }
-
-    .popup-success.activate {
-        visibility: visible;
-        opacity: .75;
+        font-family: "Megrim";
+        src: url("{% static 'css/fonts/Megrim-Regular.ttf' %}");
     }
     </style>
-    
-    
     {% csrf_token %}
     {{location|json_script:'loc'}}
     {{geo|json_script:'geojson'}}
@@ -109,10 +38,10 @@
             <div class='row center'>
                 <div class='col s12'>
                 {% if not first_visit %}
-                    <ul class='tabs tabs-fixed-width z-depth-1'>
-                        <li class='tab col s3'><a href='#welcome-tab'>Weclome</a></li>
-                        <li class='tab col s3'><a href='#info-tab'>Info</a></li>
-                        <li class='tab col s3'><a href='#options-tab'>Options</a></li>
+                    <ul class='tabs tabs-fixed-width'>
+                        <li class='tab col s3'><a href='#welcome-tab' class='active'>Weclome</a></li>
+                        <li class='tab col s3'><a href='#info-tab'>Help</a></li>
+                        <li class='tab col s3'><a href='#options-tab'>Settings</a></li>
                         <li class='tab col s3'><a href='#sources-tab'>Sources</a></li>
                         <li class='tab col s3'><a href='#contact-tab'>Contact</a></li>
                     </ul>
@@ -122,27 +51,33 @@
             <div class='container' id='welcome-tab'>
                 <div class='row center'>
                     <header class='header'>
-                        <h1 class='primary' style='text-shadow: 2px 2px 5px black; font-family: "Exo";'>Welcome To BandMap!</h1>
-                        <h5 style='color: #8B2635'><b>A way to explore Bandcamp on a map.</h5></b>
+                        <h1 class='primary' style='text-shadow: 2px 2px 5px black; font-family: "Megrim";'>BandMap</h1>
+                        <h5 style='color: black;'><b>A way to explore Bandcamp on a map.</h5></b>
                         {% if first_visit %}
-                        <div class='row'>
-                            To begin, press start.
-                        </div>
-                        <div class='row'>
-                            <div class='col6'>
-                                <a class='green waves-effect btn' href='#' id='myLocation'>Start</a>
-                            </div>
+                        <div class='row center'>
+                            <p>Hello! To start, choose a genre you'd like to explore.</p>
+                            <p>(you can change this later)</p>
+                            <form method='POST'>
+                                {% csrf_token %}
+                                <div class='input-field col s12'>
+                                        {{filter_form.genre1}}
+                                    <label>Genre</label>
+                                </div>
+                                <button class='btn red waves-effect' type='submit' name='filter' id='options'>Start</button>
+                            </form>
                         </div>
                         {% else %}
-                            <p>On BandMap, each circle represents a city. The more artists there are in the city, the bigger the circle.
-                            Hovering over a city will let you know how many artists there are and which genres are most popular to make 
-                            in that city (not based on listener habits).</p>
-                            <p>In the Info tab you will find more details on what the menu buttons do. Go to options to filter which kinds of artists 
-                            populate the map, and choose the style of the map.</p>
+                            <p>Each circle represents a city. 
+                            Hovering over a city will let you know how many artists are there and which genres are most popular to make. Clicking on a city 
+                            will display all of the artists, a link to their Bandcamp page, their genre, and an embedded music player.
+                            Additionally, you can click the Spotify button in the menu on the lower right corner to make a playlist of those artists' top tracks.</p>
+                            <p>In the <span style='color: black;'>Help</span> tab you will find details on what the buttons do. The <span style='color: black;'>Settings</span> tab will allow
+                            you to change the genre filter and choose the style of the map.</p>
                         {% endif %}
                     </header>
                 </div>
             </div>
+
             {% if not first_visit %}
                 <div class='container' id='info-tab'>
                     {% include 'includes/info.html' %}
@@ -157,13 +92,27 @@
                     {% include 'includes/contact.html' %}
                 </div>
             {% endif %}
+
         </div>
     </div>
 
     <div id='sideFeats' class='sidebar'>
         {% csrf_token %}
         <div id='city'></div>
+<<<<<<< HEAD
         <ul id='artists' class='collapsible expandable'></ul>
+=======
+        <ul class='tabs tabs-fixed-width' style='overflow-x: hidden;'>
+            <li class='tab col s6'><a href='#artists-tab' class='active'>Artists</a></li>
+            <li class='tab col s6'><a href='#city-tab'>City Stats</a></li>
+        </ul>
+        <div class='container' id='city-tab'>
+            <div id='cityStats'></div>
+        </div>
+        <div class='container' id='artists-tab'>
+            <ul id='artists' class='collapsible expandable'></ul>
+        </div>
+>>>>>>> staging
     </div>
 
     <div class='fixed-action-btn'>
@@ -171,9 +120,29 @@
         <i class='large material-icons'>menu</i>
         </a>
         {% include 'includes/buttons.html' %}
-    <div>
+    </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+    <div class='preload'>
+        <div class='preload-center'>
+            <div class='row center valign-wrapper'>
+                <div class="preloader-wrapper big active">
+                    <div class="spinner-layer spinner-red-only">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div><div class="gap-patch">
+                            <div class="circle"></div>
+                        </div><div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    {% comment %} <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>  {% endcomment %}
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" type="text/css">
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
@@ -182,6 +151,7 @@
 
     <script>
 
+<<<<<<< HEAD
 
         document.addEventListener('mousemove', function(e) {
             document.querySelector('.popup-intro-content').style.backgroundImage = `linear-gradient(${e.target.movementX}`
@@ -189,30 +159,49 @@
 
         // close sidenav button
         /* REMOVE JQUERY IN FUTURE */
+=======
+        // CLOSE SIDEFEATS
+>>>>>>> staging
         function closeNav() {
-            $('#sideFeats').css('width', '0');
-            $('#map-container').css('left','0')
+            document.querySelector('#sideFeats').style.width = '0'
+            document.querySelector('#map-container').style.left = '0'
+
         }
-        // auto init materialize js
+
+        // AUTO-INIT MATERIALIZE JS
         M.AutoInit();
 
-        // info modal control
+        // MATERIALIZE COLLAPSIBLE
+        var elem = document.querySelector('.collapsible.expandable');
+        var instance = M.Collapsible.init(elem, {
+        accordion: false
+        });
+            
+        // OPEN POPUP
         function popupIntro() {
+<<<<<<< HEAD
             /* REMOVE JQUERY IN FUTURE */
             if ($('#intro').hasClass('activate')) {
                 $('.popup-intro, .popup-intro-content').removeClass('activate')
+=======
+            if (document.querySelector('#intro').classList.contains('activate')) {
+                document.querySelector(".popup-intro.activate").classList.remove('activate')
+                document.querySelector('.popup-intro-content').classList.remove('activate');
+>>>>>>> staging
             } else {
-                $('.popup-intro, .popup-intro-content').addClass('activate')
+                document.querySelector(".popup-intro").classList.add('activate')
+                document.querySelector('.popup-intro-content').classList.add('activate');
             }
         };
+        document.querySelector('#open-intro').addEventListener('click', popupIntro);
 
-        $('#open-intro').click(popupIntro);
-
+        // CLOSE POPUP
         document.addEventListener("click", function(e) {
         if (e.target == document.querySelector(".popup-intro.activate") || e.target == document.querySelector('.popup-success.activate')) {
-            document.querySelector(".popup-intro.activate").classList.remove('activate');
-            document.querySelector('.popup-intro-content').classList.remove('activate');
-            document.querySelector('.popup-success.activate').classList.remove('activate');
+            document.querySelector(".popup-intro.activate").classList.remove('activate')
+            document.querySelector('.popup-intro-content').classList.remove('activate')
+        } else if (e.target == document.querySelector('.popup-success.activate')) {
+            document.querySelector('.popup-success.activate').classList.remove('activate')
         }
         });
 

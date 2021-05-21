@@ -1,4 +1,3 @@
-import geojson
 from geojson import FeatureCollection, Point, Feature
 
 class MapMaker():
@@ -68,7 +67,7 @@ class MapMaker():
             del points[point]['genres']
             genre_freq_sorted = sorted(genre_freq, key=lambda x: x[1], reverse=True)
             if len(genre_freq_sorted) >= 3:
-                points[point]['top_genres'] = f"<p>{genre_freq_sorted[0][0]}, {genre_freq_sorted[1][0]}, {genre_freq_sorted[2][0]}</p>"
+                points[point]['top_genres'] = f"{genre_freq_sorted[0][0]}, {genre_freq_sorted[1][0]}, {genre_freq_sorted[2][0]}"
             elif len(genre_freq_sorted) <= 2 and len(genre_freq_sorted) > 1:
-                points[point]['top_genres'] = f"<p>{genre_freq_sorted[0][0]}</p>"
+                points[point]['top_genres'] = f"{genre_freq_sorted[0][0]}"
         return points

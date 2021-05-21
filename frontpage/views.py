@@ -1,5 +1,6 @@
-from django.shortcuts import render, redirect, HttpResponseRedirect, HttpResponse
+from django.shortcuts import render, HttpResponseRedirect, HttpResponse
 from django.views import View
+from rest_framework.views import APIView
 from .models import SessionMap
 import os
 
@@ -12,14 +13,8 @@ from frontpage.forms import ContactForm
 from geopy.geocoders import Nominatim
 from frontpage.forms import FilterForm
 from frontpage.map_maker import MapMaker
-from frontpage.playlist_creator import MakePlaylist
-
 
 # handling spotify auth
-import spotipy
-from spotipy.cache_handler import CacheHandler
-from spotipy.oauth2 import SpotifyOAuth
-from spotify.views import CustomCacheHandler, validate_tokens
 from spotify.models import SpotifyToken
 
 # initializing the database connection
@@ -30,49 +25,27 @@ client = pymongo.MongoClient(f'mongodb+srv://{mongodb_user}:{mongodb_pw}@bc01-mu
 db = client.BC02
 coll = db.artistInfo
 
-# gets the names of artists in selected city and makes a playlist
-class SelectedArtists(View):
-    def post(self, *args, **kwargs):
-        data = self.request.POST
-        case = []
-        artists = []
-        city = data.dict()['city']
-
-        # parsing posted data
-        for k,v in data.items():
-            if k != 'csrfmiddlewaretoken' and k != city:
-                case.append(v)
-        for x in range(0,len(case),2):
-            artists.append({'artist_name':case[x]})
-
-        sp = validate_tokens(self.request.session.session_key)
-        spotify_username = sp.current_user()['id']
-        playlist_maker = MakePlaylist(sp_username=spotify_username, sp=sp)
-        track_ids = playlist_maker.search_artists(artists)
-        playlist_id = playlist_maker.get_playlist_id(f"{city.title()} Bandmap Playlist")
-        playlist_maker.create_playlist(track_ids, playlist_id)
-
-        return redirect('map')
-
 # saves the geolocation of session
-class SaveLocation(View):
+class SaveLocation(APIView):
     model = SessionMap
     def post(self, *args, **kwargs):
-        if self.request.is_ajax():
-            user = self.model.objects.filter(session_user=self.request.session.session_key)[0]
-            user.latitude = self.request.POST.get('latitude')
-            user.longitude = self.request.POST.get('longitude')
-            user.save(update_fields=['latitude','longitude'])
+        data = self.request.data
+        user = self.model.objects.filter(session_user=self.request.session.session_key)[0]
+        user.latitude = data['latitude']
+        user.longitude = data['longitude']
+        user.save(update_fields=['latitude','longitude'])
         return HttpResponseRedirect('/')
 
 # saves new location if choosen
-class NewLocation(View):
+class NewLocation(APIView):
+    model = SessionMap
     def post(self, *args, **kwargs):
-        user = SessionMap.objects.filter(session_user=self.request.session.session_key)[0]
-        user.latitude = self.request.POST.get('new_location[lat]')
-        user.longitude = self.request.POST.get('new_location[lng]')
+        user = self.model.objects.filter(session_user=self.request.session.session_key)[0]
+        data = self.request.data
+        user.latitude = data['new_location']['lat']
+        user.longitude = data['new_location']['lng']
         user.save(update_fields=['latitude','longitude'])
-        return redirect('frontpage:map')
+        return HttpResponseRedirect('/')
 
 ## MongoDB search
 def search_db(region, genres, loc_lookup):
@@ -97,7 +70,10 @@ def search_db(region, genres, loc_lookup):
                 'location':{'$regex':f'(, {region.lower()})'},
                 'genres': {'$all':genres}
                 })
-        local_artists.extend(list(additional_artists))
+        if additional_artists.count() < 10:
+            pass
+        elif additional_artists.count() >= 10:
+            local_artists.extend(list(additional_artists))
     else:
         local_artists = list(local_artists)
     return local_artists
@@ -212,8 +188,11 @@ class MapView(View):
                         additional_artists = coll.find({'latitude':{'$exists':True},'location':{'$regex':f'({region.lower()})'}})
                     except:
                         region = loc_lookup.raw['address']['city'].lower()
-                        additional_artists = coll.find({'latitude':{'$exists':True},'location':{'$regex':f'(, {region.lower()})'}})
-                    local_artists.extend(list(additional_artists))
+                        additional_artists = coll.find({'latitude':{'$exists':True},'location':{'$regex':f'({region.lower()})'}})
+                    if additional_artists.count() < 10:
+                        pass
+                    elif additional_artists.count() >= 10:
+                        local_artists.extend(list(additional_artists))
                 else:
                     local_artists = list(local_artists)
 
