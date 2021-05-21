@@ -186,7 +186,10 @@ class MapView(View):
                     except:
                         region = loc_lookup.raw['address']['city'].lower()
                         additional_artists = coll.find({'latitude':{'$exists':True},'location':{'$regex':f'({region.lower()})'}})
-                    local_artists.extend(list(additional_artists))
+                    if additional_artists.count() < 10:
+                        pass
+                    else:
+                        local_artists.extend(list(additional_artists))
                 else:
                     local_artists = list(local_artists)
 
