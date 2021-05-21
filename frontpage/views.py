@@ -108,7 +108,7 @@ class MapView(View):
                     reply_to=[sender]
                 )
                 email.send()
-                return HttpResponseRedirect('')
+                return HttpResponseRedirect('/')
 
         # filter form
         if 'filter' in self.request.POST:
@@ -117,7 +117,7 @@ class MapView(View):
                 user.genre1 = filter_form.cleaned_data.get('genre1')
                 user.genre2 = filter_form.cleaned_data.get('genre2')
                 user.save(update_fields=['genre1','genre2'])
-                return HttpResponseRedirect('')
+                return HttpResponseRedirect('/')
             else:
                 return HttpResponse(filter_form.errors)
     
