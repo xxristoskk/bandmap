@@ -19,8 +19,8 @@ from spotify.models import SpotifyToken
 
 # initializing the database connection
 import pymongo
-mongodb_pw = os.environ['MONGODB_PW']
-mongodb_user = os.environ['MONGODB_USER']
+mongodb_pw = os.getenv("MONGO_PW")
+mongodb_user = os.getenv("MONGO_USER")
 client = pymongo.MongoClient(f'mongodb+srv://{mongodb_user}:{mongodb_pw}@bc01-muwwi.gcp.mongodb.net/test?retryWrites=true&w=majority')
 db = client.BC02
 coll = db.artistInfo

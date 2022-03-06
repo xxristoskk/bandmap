@@ -16,8 +16,8 @@ import spotipy
 from spotipy.cache_handler import CacheHandler
 from spotipy.oauth2 import SpotifyOAuth
 
-client_id = os.environ['SPOTIFY_ID']
-client_secret = os.environ['SPOTIFY_SECRET']
+client_id = os.getenv("SP_CLIENT_ID")
+client_secret = os.getenv("SP_SECRET")
 scope = 'playlist-modify-public'
 redirect_uri = 'https://bandmap-v1.herokuapp.com/spotify/redirect'
 
