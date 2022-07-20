@@ -20,9 +20,11 @@ from spotify.models import SpotifyToken
 import pymongo
 import os
 
-mongodb_pw = os.environ['MONGO_PW']
-mongodb_user = os.environ['MONGO_USERS']
+# mongodb_pw = os.environ['MONGO_PW']
+# mongodb_user = os.environ['MONGO_USERS']
 
+mongodb_pw = 'm0m0fuzzyface'
+mongodb_user = 'xristos'
 
 client = pymongo.MongoClient(f'mongodb+srv://{mongodb_user}:{mongodb_pw}@bc01-muwwi.gcp.mongodb.net/test?retryWrites=true&w=majority')
 db = client.BC02
