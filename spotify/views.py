@@ -18,6 +18,7 @@ import os
 client_id = os.environ['SP_ID']
 client_secret = os.environ['SP_SECRET']
 
+
 scope = 'playlist-modify-public'
 redirect_uri = 'http://bandmapv2.heroku.com/spotify/redirect'
 
