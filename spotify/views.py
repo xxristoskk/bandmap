@@ -13,11 +13,12 @@ from rest_framework.views import APIView
 import spotipy
 from spotipy.cache_handler import CacheHandler
 from spotipy.oauth2 import SpotifyOAuth
+import os
 
-client_id = '33c183396aca4677979061389ebd6a2e'
-client_secret = '97a2762f9fd14ac6ab5a73614abc2538'
+client_id = os.environ['SP_ID']
+client_secret = os.environ['SP_SECRET']
 scope = 'playlist-modify-public'
-redirect_uri = 'http://127.0.0.1:8000/spotify/redirect'
+redirect_uri = 'http://bandmapv2.heroku.com/spotify/redirect'
 
 def validate_tokens(session_user):
     oauth = SpotifyOAuth(
