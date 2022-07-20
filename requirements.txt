@@ -10,4 +10,4 @@ djangorestframework==3.12.2
 psycopg2-binary==2.8.6
 geopy==2.1.0
 geojson==2.5.0
-python-dotenv==0.8
+beautifulsoup4==4.9.3 

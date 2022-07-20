@@ -2954,7 +2954,7 @@ ul.staggered-list li {
   padding-top: 20px;
   color: #fff;
   background-color: #ee6e73;
-  
+
 }
 
 .page-footer .footer-copyright {
@@ -5963,11 +5963,11 @@ body.keyboard-focused .dropdown-content li:focus {
   height: 32px;
   font-size: 13px;
   font-weight: 500;
-  color: rgba(0, 0, 0, 0.6);
+  color: white;
   line-height: 32px;
   padding: 0 12px;
   border-radius: 16px;
-  background-color: #e4e4e4;
+  background-color: rgb(230, 107, 128);
   margin-bottom: 5px;
   margin-right: 5px;
 }
@@ -6780,7 +6780,7 @@ textarea.materialize-textarea {
 
 [type="radio"]:not(:checked) + span:before,
 [type="radio"]:not(:checked) + span:after {
-  border: 2px solid #5a5a5a;
+  border: 2px solid #8c9eff;
 }
 
 [type="radio"]:not(:checked) + span:after {
@@ -6790,18 +6790,18 @@ textarea.materialize-textarea {
 
 /* Checked styles */
 [type="radio"]:checked + span:before {
-  border: 2px solid transparent;
+  border: 2px solid rgb(230, 107, 128);
 }
 
 [type="radio"]:checked + span:after,
 [type="radio"].with-gap:checked + span:before,
 [type="radio"].with-gap:checked + span:after {
-  border: 2px solid #8c9eff;
+  border: 2px solid rgb(230, 107, 128);
 }
 
 [type="radio"]:checked + span:after,
 [type="radio"].with-gap:checked + span:after {
-  background-color: #8c9eff;
+  background-color: rgb(230, 107, 128);
 }
 
 [type="radio"]:checked + span:after {

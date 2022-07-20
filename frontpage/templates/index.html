@@ -6,7 +6,6 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:image" content={% static '/img/bm_logo.png'%} />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <link rel="stylesheet" href="{% static '/css/materialize.css' %}">
     <link rel="stylesheet" href="{% static '/css/styles.css' %}">
@@ -21,10 +20,6 @@
     }
     </style>
     {% csrf_token %}
-    {{location|json_script:'loc'}}
-    {{geo|json_script:'geojson'}}
-    {{sp_token|json_script:'sp_token'}}
-    {{mapbox|json_script:'token'}}
 
     <div id='map-container'></div>
 
@@ -38,7 +33,9 @@
         <div class='popup-intro-content' id='intro'>
             <div class='row center'>
                 <div class='col s12'>
+
                 {% if not first_visit %}
+
                     <ul class='tabs tabs-fixed-width'>
                         <li class='tab col s3'><a href='#welcome-tab' class='active'>Weclome</a></li>
                         <li class='tab col s3'><a href='#info-tab'>Help</a></li>
@@ -46,6 +43,7 @@
                         <li class='tab col s3'><a href='#sources-tab'>Sources</a></li>
                         <li class='tab col s3'><a href='#contact-tab'>Contact</a></li>
                     </ul>
+
                 {% endif %}
                 </div>
             </div>
@@ -53,33 +51,39 @@
                 <div class='row center'>
                     <header class='header'>
                         <h1 class='primary' style='text-shadow: 2px 2px 5px black; font-family: "Megrim";'>BandMap</h1>
-                        <h6 style='color: black;'><b>A way to explore Bandcamp on a map.</h6></b>
-                        {% if first_visit %}
-                        <div class='row center'>
-                            <p>To start, choose a genre you like.</p>
-                            <p>(you can change this later)</p>
-                            <form method='POST'>
-                                {% csrf_token %}
-                                <div class='input-field col s12'>
-                                        {{filter_form.genre1}}
-                                    <label>Genre</label>
-                                </div>
-                                <button class='btn red waves-effect' type='submit' name='filter' id='options'>Start</button>
-                            </form>
-                        </div>
-                        {% else %}
-                            <p>Each circle represents a city. 
-                            Hovering over a city will let you know how many artists are there and which genres are most popular to make. Clicking on a city 
-                            will display all of the artists, a link to their Bandcamp page, their genre, and an embedded music player.
-                            Additionally, you can click the Spotify button in the menu on the lower right corner to make a playlist of those artists' top tracks.</p>
-                            <p>In the <span style='color: black;'>Help</span> tab you will find details on what the buttons do. The <span style='color: black;'>Settings</span> tab will allow
-                            you to change the genre filter and choose the style of the map.</p>
-                        {% endif %}
+                        <h5 style='color: black;'><b>A way to explore Bandcamp on a map.</h5></b>
+
+                {% if first_visit %}
+
+                    <div class='row left-align' id='filter'>
+                        {% csrf_token %}
+                        <div class='chips'></div>
+                        <label>Type a genres and press enter (2 max)</label>
+                    </div>
+                    <div class='row left-align'>
+                        <input type='text' id='location'>
+                        <label>Look up a location</label>                            
+                    </div>
+                    <div class='row center'>
+                        <button class='btn red' type='submit' name='filter' id='save-data'>Build Map</button>
+                    </div>
+
+                {% else %}
+
+                    <p>Each circle represents a city. 
+                    Hovering over a city will let you know how many artists are there and which genres are most popular to make. Clicking on a city 
+                    will display all of the artists, a link to their Bandcamp page, their genre, and a music player (if available).
+                    Additionally, you can click the Spotify button in the menu on the lower right corner to make a playlist of those artists' top tracks.</p>
+                    <p>In the <span style='color: black;'>Help</span> tab you will find details on what the buttons do. The <span style='color: black;'>Settings</span> tab will allow
+                    you to change the genre filter and choose the style of the map.</p>
+
+                {% endif %}
                     </header>
                 </div>
             </div>
 
             {% if not first_visit %}
+
                 <div class='container' id='info-tab'>
                     {% include 'includes/info.html' %}
                 </div>
@@ -92,8 +96,8 @@
                 <div class='container' id='contact-tab'>
                     {% include 'includes/contact.html' %}
                 </div>
-            {% endif %}
 
+            {% endif %}
         </div>
     </div>
 
@@ -112,12 +116,16 @@
         </div>
     </div>
 
+    {% if not first_visit %}
+
     <div class='fixed-action-btn'>
         <a href='#' class='btn-floating btn-large pulse indigo darken-4'>
         <i class='large material-icons'>menu</i>
         </a>
         {% include 'includes/buttons.html' %}
     </div>
+
+    {% endif %}
 
     <div class='preload'>
         <div class='preload-center'>
@@ -137,15 +145,18 @@
         </div>
     </div>
 
+    {{location|json_script:'loc'}}
+    {{geo|json_script:'geojson'}}
+    {{sp_token|json_script:'sp_token'}}
+    {{mapbox|json_script:'token'}}
+    {% comment %} {{genres|json_script:'genres'}} {% endcomment %}
+    {{first_visit|json_script:'first_visit'}}
 
-
-    {% comment %} <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>  {% endcomment %}
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" type="text/css">
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet' />
     <script src="{% static '/js/map.js' %}"></script>
-
     <script>
 
         // CLOSE SIDEFEATS
@@ -156,7 +167,15 @@
         }
 
         // AUTO-INIT MATERIALIZE JS
-        M.AutoInit();
+        M.AutoInit()
+
+        // MATERIALIZE CHIPS
+        document.addEventListener('DOMContentLoaded', function() {
+            var elem = document.querySelector('.chips');
+            var instances = M.Chips.init(
+                elem,
+                options={limit: 2})
+          })
 
         // MATERIALIZE COLLAPSIBLE
         var elem = document.querySelector('.collapsible.expandable');
@@ -174,7 +193,7 @@
                 document.querySelector('.popup-intro-content').classList.add('activate');
             }
         };
-        document.querySelector('#open-intro').addEventListener('click', popupIntro);
+        document.querySelector('#open-intro').addEventListener('click', popupIntro)
 
         // CLOSE POPUP
         document.addEventListener("click", function(e) {
@@ -184,9 +203,17 @@
         } else if (e.target == document.querySelector('.popup-success.activate')) {
             document.querySelector('.popup-success.activate').classList.remove('activate')
         }
-        });
+        })
 
-
+        // GOOGLE AUTOCOMPLETE
+        function PlaceSearch () {
+            var input = document.getElementById('location')
+            var autocomplete = new google.maps.places.Autocomplete(input)
+        }
+        
+    </script>
+    <script async
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7RBQF-xFcHCqBsiPQ43SsvBRe097QRco&libraries=places&callback=PlaceSearch">
     </script>
 </body>
 </html>
