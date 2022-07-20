@@ -129,7 +129,7 @@ class MapView(View):
                 user.save(update_fields=['genre1', 'genre2', 'latitude', 'longitude'])
 
 
-                return HttpResponseRedirect('/')
+                return HttpResponseRedirect('')
 
             contact_form = self.contact_form_class(data=data)
 
@@ -150,7 +150,7 @@ class MapView(View):
                         reply_to=[sender]
                     )
                     email.send()
-                    return HttpResponseRedirect('/')
+                    return HttpResponseRedirect('')
     
 
 
