@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['bandmapv2.herokuapp.com', '.herokuapp']
 
@@ -139,7 +139,7 @@ STATIC_URL = '/static/'
 # ]
 
 STATIC_ROOT = os.path.join(BASE_DIR,'bandmap/static/')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
