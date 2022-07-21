@@ -125,13 +125,13 @@ if (document.body.contains(document.querySelector('#options'))) {
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
     var chipsInstance = M.Chips.getInstance(document.querySelector('.chips'))
     var optionsData = {
-      location: currentLocation,
+      // location: currentLocation,
       genres: chipsInstance.chipsData
     }
     document.querySelector(".preload").classList.add('activate')
 
 
-    fetch('',{
+    fetch('new_genres/',{
       method: 'POST',
       body: JSON.stringify(optionsData),
       headers: {'X-CSRFToken': csrftoken, 'content-type':'application/json'}

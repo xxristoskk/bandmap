@@ -23,6 +23,8 @@
 
     <div id='map-container'></div>
 
+    {% include 'includes/messages.html' %}
+
     <div class='popup-success' id='success'>
         <div class='row center'>
             <h4 class='primary'>Your playlist is ready!</h4>
@@ -206,7 +208,7 @@
         })
 
         // GOOGLE AUTOCOMPLETE
-        function PlaceSearch () {
+        function PlaceSearch () {       
             var input = document.getElementById('location')
             var autocomplete = new google.maps.places.Autocomplete(input)
         }
