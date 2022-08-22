@@ -230,7 +230,7 @@ class MapView(View):
             local_artists = search_db(region, genres, loc_lookup)
         
             print(f'loaded artists')
-            
+            print(local_artists)
             # build geojson based on mongoDB query
             user_map = MapMaker(local_artists)
             points = user_map.point_properties()
