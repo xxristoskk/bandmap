@@ -23,8 +23,6 @@
 
     <div id='map-container'></div>
 
-    {% include 'includes/messages.html' %}
-
     <div class='popup-success' id='success'>
         <div class='row center'>
             <h4 class='primary'>Your playlist is ready!</h4>
@@ -59,12 +57,10 @@
 
                     <div class='row left-align' id='filter'>
                         {% csrf_token %}
-                        <div class='chips'></div>
-                        <label>Type a genres and press enter (2 max)</label>
+                        <div class='chips chips-autocomplete' id='chips-input'></div>
                     </div>
                     <div class='row left-align'>
                         <input type='text' id='location'>
-                        <label>Look up a location</label>                            
                     </div>
                     <div class='row center'>
                         <button class='btn red' type='submit' name='filter' id='save-data'>Build Map</button>
@@ -165,26 +161,16 @@
         function closeNav() {
             document.querySelector('#sideFeats').style.width = '0'
             document.querySelector('#map-container').style.left = '0'
-
         }
-
-        // AUTO-INIT MATERIALIZE JS
-        M.AutoInit()
-
-        // MATERIALIZE CHIPS
-        document.addEventListener('DOMContentLoaded', function() {
-            var elem = document.querySelector('.chips');
-            var instances = M.Chips.init(
-                elem,
-                options={limit: 2})
-          })
 
         // MATERIALIZE COLLAPSIBLE
         var elem = document.querySelector('.collapsible.expandable');
         var instance = M.Collapsible.init(elem, {
-        accordion: false
-        });
-            
+            accordion: false
+        })
+        
+        M.AutoInit()
+
         // OPEN POPUP
         function popupIntro() {
             if (document.querySelector('#intro').classList.contains('activate')) {
@@ -194,7 +180,8 @@
                 document.querySelector(".popup-intro").classList.add('activate')
                 document.querySelector('.popup-intro-content').classList.add('activate');
             }
-        };
+        }
+
         document.querySelector('#open-intro').addEventListener('click', popupIntro)
 
         // CLOSE POPUP
@@ -208,7 +195,7 @@
         })
 
         // GOOGLE AUTOCOMPLETE
-        function PlaceSearch () {       
+        function PlaceSearch () {
             var input = document.getElementById('location')
             var autocomplete = new google.maps.places.Autocomplete(input)
         }

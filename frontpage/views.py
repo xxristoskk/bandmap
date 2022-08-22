@@ -37,8 +37,8 @@ class NewGenres(APIView):
 
         user = self.model.objects.filter(session_user=self.request.session.session_key)[0]
         user.genre1 = data['genres'][0]['tag']
-        user.genre2 = data['genres'][0]['tag']
-        user.save(update_fields=['genre1','genre2'])
+        # user.genre2 = data['genres'][0]['tag']
+        user.save(update_fields=['genre1'])
         return HttpResponseRedirect('/')
 
 # saves new location if choosen
@@ -74,20 +74,20 @@ def search_db(region, genres, loc_lookup):
                     'location':{'$regex':f'({region})'},
                     'genres':genres[0]
                     }))
-        genre2_artists = list(coll.find({
-                    'latitude': {'$exists':True},
-                    'location':{'$regex':f'({region})'},
-                    'genres':genres[1]
-                    }))
-        genre1_artists.extend(genre2_artists)
-        return genre1_artists
+        # genre2_artists = list(coll.find({
+        #             'latitude': {'$exists':True},
+        #             'location':{'$regex':f'({region})'},
+        #             'genres':genres[1]
+        #             }))
+        # genre1_artists.extend(genre2_artists)
+        # return genre1_artists
 
-    else:
-        genre1_artists = list(coll.find({
-                    'latitude': {'$exists':True},
-                    'location':{'$regex':f'({region})'},
-                    'genres':genres[0]
-                    }))
+    # else:
+    #     genre1_artists = list(coll.find({
+    #                 'latitude': {'$exists':True},
+    #                 'location':{'$regex':f'({region})'},
+    #                 'genres':genres[0]
+    #                 }))
         return genre1_artists
 
     
@@ -225,7 +225,7 @@ class MapView(View):
             if not user[0].genre2:
                 genres = [user[0].genre1.lower()]
             else:
-                genres = [user[0].genre1.lower(),user[0].genre2.lower()]
+                genres = [user[0].genre1.lower()]
 
             local_artists = search_db(region, genres, loc_lookup)
         
