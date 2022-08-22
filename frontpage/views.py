@@ -70,14 +70,14 @@ def search_db(region, genres, loc_lookup):
     '''
     artists = []
 
-    if len(genres) > 1:
-        for genre in genres:
-            genre_artists = list(coll.find({
-                'latitude': {'$exists': True},
-                'location': {'$regex': f"({region})"},
-                'genres': genre
-            }))
-            artists.append(genre_artists)
+    # if len(genres) > 1:
+    for genre in genres:
+        genre_artists = list(coll.find({
+            'latitude': {'$exists': True},
+            'location': {'$regex': f"({region})"},
+            'genres': genre
+        }))
+        artists.append(genre_artists)
 
         # genre1_artists = list(coll.find({
         #             'latitude': {'$exists':True},
@@ -89,15 +89,15 @@ def search_db(region, genres, loc_lookup):
         #             'location':{'$regex':f'({region})'},
         #             'genres':genres[1]
         #             }))
-        genre1_artists.extend(genre2_artists)
-        return artists
-    else:
-        artists = list(coll.find({
-                    'latitude': {'$exists':True},
-                    'location':{'$regex':f'({region})'},
-                    'genres':genres[0]
-                    }))
-    return genre1_artists
+        # genre1_artists.extend(genre2_artists)
+        # return artists
+    # else:
+    #     artists = list(coll.find({
+    #                 'latitude': {'$exists':True},
+    #                 'location':{'$regex':f'({region})'},
+    #                 'genres':genres[0]
+    #                 }))
+    return artists
 
     
     
