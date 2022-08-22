@@ -44,7 +44,7 @@ a {
 
 .popup-intro-content {
     position: relative;
-    width: 500px;
+    width: 700px;
     height: 530px;
     border-radius: 10px;
     background: linear-gradient(180deg, #000066 0%, #8a89cd 0%, #000066 0%, #000066 0%, #8a89cd 0%, #000066 0%, #000066 0%, #8a89cd 0%, #000066 0%, #000066 0%, #8a89cd 0%, #000066 0%, #000066 13%, #8a89cd 74%, #000066 100%), radial-gradient(ellipse at 50% 50%, #000066 0%, #a10031 43%, #000066 72%);
