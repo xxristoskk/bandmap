@@ -75,7 +75,7 @@ def search_db(region, genres, loc_lookup):
         genre_artists = list(coll.find({
             'latitude': {'$exists': True},
             'location': {'$regex': f"({region})"},
-            'genres': genre
+            'genres': genre[0]
         }))
         artists.append(genre_artists)
 
