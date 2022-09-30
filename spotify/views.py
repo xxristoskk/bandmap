@@ -3,7 +3,6 @@ from django.utils import timezone
 from datetime import timedelta
 from frontpage.playlist_creator import MakePlaylist
 from .models import SpotifyToken
-import os
 
 # rest framework imports
 from rest_framework.response import Response
@@ -11,15 +10,16 @@ from rest_framework import status
 from rest_framework.views import APIView
 
 # spotipy imports
-# handling spotify auth
 import spotipy
 from spotipy.cache_handler import CacheHandler
 from spotipy.oauth2 import SpotifyOAuth
+import os
 
-client_id = os.environ['SPOTIFY_ID']
-client_secret = os.environ['SPOTIFY_SECRET']
+client_id = os.environ['SP_ID']
+client_secret = os.environ['SP_SECRET']
+
 scope = 'playlist-modify-public'
-redirect_uri = 'https://bandmap-v1.herokuapp.com/spotify/redirect'
+redirect_uri = 'http://bandmapv2.heroku.com/spotify/redirect'
 
 def validate_tokens(session_user):
     oauth = SpotifyOAuth(

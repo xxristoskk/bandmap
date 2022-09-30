@@ -1,15 +1,15 @@
 {% load static %}
 <ul>
     <li>
-        <a href='#' class='btn-floating btn-medium tooltipped red' data-position='left' data-tooltip='Search for a location' id='addSearch'>
+        <a href='#' class='btn-floating btn-medium tooltipped red' data-position='left' data-tooltip='Search' id='open-intro'>
         <i class='medium material-icons'>search</i>
         </a>
     </li>
-    <li>
+    {% comment %} <li>
         <a href='#' class='tooltipped btn-floating btn-medium indigo' data-position="left" data-tooltip="Make a new map" id='newLocation'>
         <i class='medium material-icons'>map</i>
         </a>
-    </li>
+    </li> {% endcomment %}
     {% if sp_token %}
     <li>
         <a href='#' class='btn-floating btn-medium green tooltipped' data-position="left" data-tooltip="Make a Spotify playlist" id='createPlaylist'>
@@ -23,9 +23,9 @@
         </a>
     </li>
     {% endif %}
-    <li>
-        <a href='#' class='btn-floating btn-medium blue tooltipped' data-position='left' data-tooltip='More Info' id='open-intro'>
+    {% comment %} <li>
+        <a href='#modal1' class='btn-floating btn-medium blue tooltipped modal-trigger' data-position='left' data-tooltip='Help and Info'>
         <i class='medium material-icons'>info_outline</i>
         </a>
-    </li>
+    </li> {% endcomment %}
 </ul>

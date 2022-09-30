@@ -44,8 +44,8 @@ a {
 
 .popup-intro-content {
     position: relative;
-    width: 700px;
-    height: 530px;
+    width: 400px;
+    height: 440px;
     border-radius: 10px;
     background: linear-gradient(180deg, #000066 0%, #8a89cd 0%, #000066 0%, #000066 0%, #8a89cd 0%, #000066 0%, #000066 0%, #8a89cd 0%, #000066 0%, #000066 0%, #8a89cd 0%, #000066 0%, #000066 13%, #8a89cd 74%, #000066 100%), radial-gradient(ellipse at 50% 50%, #000066 0%, #a10031 43%, #000066 72%);
     background-blend-mode: lighten, soft-light; 
@@ -65,7 +65,7 @@ a {
 
 .popup-intro.activate {
     visibility: visible;
-    opacity: .95;
+    opacity: 1;
 }
 
 .popup-links {
@@ -88,7 +88,7 @@ a {
 
 .popup-success.activate {
     visibility: visible;
-    opacity: .75;
+    opacity: .98;
 }
 
 .sidebar {

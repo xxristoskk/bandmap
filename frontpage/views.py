@@ -18,21 +18,32 @@ from spotify.models import SpotifyToken
 
 # initializing the database connection
 import pymongo
+<<<<<<< HEAD
 mongodb_pw = 'm0m0fuzzyface'
 mongodb_user = 'toast'
+=======
+import os
+
+mongodb_pw = os.environ['MONGO_PW']
+mongodb_user = os.environ['MONGO_USERS']
+
+>>>>>>> 6f956aac26fade3298f4d5c118443af3c133050e
 client = pymongo.MongoClient(f'mongodb+srv://{mongodb_user}:{mongodb_pw}@bc01-muwwi.gcp.mongodb.net/test?retryWrites=true&w=majority')
 db = client.BC02
 coll = db.artistInfo
 
 # saves the geolocation of session
-class SaveLocation(APIView):
+class NewGenres(APIView):
     model = SessionMap
     def post(self, *args, **kwargs):
         data = self.request.data
+        if not data['genres']:
+            return HttpResponseRedirect('/')
+
         user = self.model.objects.filter(session_user=self.request.session.session_key)[0]
-        user.latitude = data['latitude']
-        user.longitude = data['longitude']
-        user.save(update_fields=['latitude','longitude'])
+        user.genre1 = data['genres'][0]['tag']
+        user.genre2 = data['genres'][0]['tag']
+        user.save(update_fields=['genre1','genre2'])
         return HttpResponseRedirect('/')
 
 # saves new location if choosen
@@ -50,6 +61,7 @@ class NewLocation(APIView):
 def search_db(region, genres, loc_lookup):
 
     print(genres)
+<<<<<<< HEAD
     genre1_artists = list(coll.find({
                 'latitude': {'$exists':True},
                 'location':{'$regex':f'({region})'},
@@ -85,6 +97,43 @@ def search_db(region, genres, loc_lookup):
     #         local_artists.extend(list(additional_artists))
     # else:
     return local_artists
+=======
+    '''
+    for multiple genre searches
+    artists = []
+    for genre in genres:
+        genre_artists = list(coll.find({
+                    'latitude': {'$exists':True},
+                    'location':{'$regex':f'({region})'},
+                    'genres':genre
+                    }))
+        artists.extend(genre_artists)
+    return artists
+    '''
+    if len(genres) > 1:
+        genre1_artists = list(coll.find({
+                    'latitude': {'$exists':True},
+                    'location':{'$regex':f'({region})'},
+                    'genres':genres[0]
+                    }))
+        genre2_artists = list(coll.find({
+                    'latitude': {'$exists':True},
+                    'location':{'$regex':f'({region})'},
+                    'genres':genres[1]
+                    }))
+        genre1_artists.extend(genre2_artists)
+        return genre1_artists
+
+    else:
+        genre1_artists = list(coll.find({
+                    'latitude': {'$exists':True},
+                    'location':{'$regex':f'({region})'},
+                    'genres':genres[0]
+                    }))
+        return genre1_artists
+
+    
+>>>>>>> 6f956aac26fade3298f4d5c118443af3c133050e
     
 # main map view
 class MapView(View):
@@ -106,11 +155,26 @@ class MapView(View):
                 
                 genres = data['genres']
                 
+<<<<<<< HEAD
                 if len(genres) > 1:
                     user.genre1 = genres[0]['tag']
                 else:
                     user.genre1 = genres[0]['tag']
                 
+=======
+                print(f'post response {genres}')
+
+                if not genres:
+                    return HttpResponseRedirect('/')
+
+                if len(genres) > 1:
+                    user.genre1 = genres[0]['tag']
+                    user.genre2 = genres[1]['tag']
+                else:
+                    user.genre1 = genres[0]['tag']
+                
+                
+>>>>>>> 6f956aac26fade3298f4d5c118443af3c133050e
                 print(f'settings location {data["location"]}')
 
                 if type(data['location']) == str:
@@ -123,7 +187,11 @@ class MapView(View):
                     user.latitude = data['location']['latitude']
                     user.longitude = data['location']['longitude']
 
+<<<<<<< HEAD
                 user.save(update_fields=['genre1', 'latitude', 'longitude'])
+=======
+                user.save(update_fields=['genre1', 'genre2', 'latitude', 'longitude'])
+>>>>>>> 6f956aac26fade3298f4d5c118443af3c133050e
 
 
                 return HttpResponseRedirect('/')
@@ -209,8 +277,15 @@ class MapView(View):
                 print(f'region {region}')
 
             # search mongoDB for artists based on region and genres
+<<<<<<< HEAD
 
             genres = [user[0].genre1.lower()]
+=======
+            if not user[0].genre2:
+                genres = [user[0].genre1.lower()]
+            else:
+                genres = [user[0].genre1.lower(),user[0].genre2.lower()]
+>>>>>>> 6f956aac26fade3298f4d5c118443af3c133050e
 
             local_artists = search_db(region, genres, loc_lookup)
         

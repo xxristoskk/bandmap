@@ -1,8 +1,9 @@
 import spotipy
 import time
+from bs4 import BeautifulSoup
+import requests
 
 def break_up_albums(album_ids, sp):
-    print(album_ids)
     trax = []
     size = len(album_ids)
     if size <= 20:
@@ -42,9 +43,9 @@ class MakePlaylist():
     def search_artists(self, selected_artists):
         artist_ids= []
         for artist in selected_artists:
-            results = self.sp.search(q=artist['artist_name'], type='artist', limit=1)
+            results = self.sp.search(q=artist['name'], type='artist', limit=1)
             # verifies the artist names match exactly
-            if any(results['artists']['items']) and artist['artist_name'].lower() == results['artists']['items'][0]['name'].lower():
+            if any(results['artists']['items']) and artist['name'].lower() == results['artists']['items'][0]['name'].lower():
                 artist_ids.append(results['artists']['items'][0]['id'])
             else:
                 continue
@@ -61,6 +62,7 @@ class MakePlaylist():
 
         return top_trax
 
+    # create playlist from list of track ids
     def create_playlist(self, results, playlist_id):
         size = len(results)
         if size <= 100:

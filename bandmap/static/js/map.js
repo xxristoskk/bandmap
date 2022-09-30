@@ -347,15 +347,19 @@ genres = [
   const genre_data = {}
 
   genres.forEach(function(genre) {
-  genre_data[genre] = null
+    genre_data[genre] = null
   })
 
   const autoOptions = {
-  data: genre_data
+    data: genre_data
   }
-
   document.addEventListener('DOMContentLoaded', function() {
-      var elem = document.querySelector('.chips');
+    var elems = document.querySelectorAll('.modal');
+    var instances = M.Modal.init(elems, options);
+  });
+  
+  document.addEventListener('DOMContentLoaded', function() {
+      var elem = document.querySelector('.chips')
       var instances = M.Chips.init(
           elem,
           options={
@@ -363,6 +367,11 @@ genres = [
             autocompleteOptions: autoOptions,
             placeholder: 'Enter a genre'})
     })
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var elem = document.querySelector('.fixed-action-btn')
+    var instances = M.FloatingActionButton.init(elem)
+  })
 
 // INITIALIZE LOCATION
 first_visit = JSON.parse(document.getElementById('first_visit').textContent)
@@ -406,36 +415,36 @@ if (first_visit) {
 /* MENU BUTTONS */
 
 // toggle new searchbar
-document.querySelector('#addSearch').addEventListener('click', function() {
-  if (map.hasControl(searchBar)) {
-    map.removeControl(searchBar)
-  } else {
-    map.addControl(searchBar)
-  }
-})
+// document.querySelector('#addSearch').addEventListener('click', function() {
+//   if (map.hasControl(searchBar)) {
+//     map.removeControl(searchBar)
+//   } else {
+//     map.addControl(searchBar)
+//   }
+// })
 
 // POPULATE NEW MAP FROM NEW LOCATION
-document.querySelector('#newLocation').addEventListener('click', function() {
+// document.querySelector('#newLocation').addEventListener('click', function() {
 
-  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-  let newCenter = map.getCenter();
-  const data = {'new_location': newCenter}
-  document.querySelector(".preload").classList.add('activate')
+//   const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+//   let newCenter = map.getCenter();
+//   const data = {'new_location': newCenter}
+//   document.querySelector(".preload").classList.add('activate')
 
-  fetch('new_location/',{
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: {'X-CSRFToken': csrftoken, 'content-type': 'application/json'}
-  })
-  .then(data => {
-    if (data.status == '200') {
-      setTimeout(function() {
-        document.querySelector(".preload").classList.remove('activate')
-        location.reload()
-      }, 700);
-    }
-  })
-});
+//   fetch('new_location/',{
+//     method: 'POST',
+//     body: JSON.stringify(data),
+//     headers: {'X-CSRFToken': csrftoken, 'content-type': 'application/json'}
+//   })
+//   .then(data => {
+//     if (data.status == '200') {
+//       setTimeout(function() {
+//         document.querySelector(".preload").classList.remove('activate')
+//         location.reload()
+//       }, 700);
+//     }
+//   })
+// });
 
 // AUTHORIZE SPOTIFY
 if (document.body.contains(document.querySelector('#spotifyAuth'))) {
@@ -475,14 +484,14 @@ if (document.body.contains(optionLight) || document.body.contains(optionDark)){
 }
 
 // OPTIONS (genre filter, mode, styles)
-if (document.body.contains(document.querySelector('#options'))) {
-
+if (document.body.contains(document.querySelector('#save-data'))) {
   // saving the changes
-  document.querySelector('#options').addEventListener('click', function() {
+  document.querySelector('#save-data').addEventListener('click', function() {
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
     var chipsInstance = M.Chips.getInstance(document.querySelector('.chips'))
+    var user_location = document.querySelector('#location').value
     var optionsData = {
-      location: currentLocation,
+      location: user_location,
       genres: chipsInstance.chipsData
     }
     document.querySelector(".preload").classList.add('activate')

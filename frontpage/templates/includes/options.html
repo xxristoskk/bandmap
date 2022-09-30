@@ -8,35 +8,29 @@
     </div>
 </div>
 
+<div class='row' id='filter'>
+    {% csrf_token %}
+    <div class='chips'></div>
+        <label>Type a genre and press enter (2 max)</label>
+</div>
 <div class='row center'>
-    <form method='POST'>
-        {% csrf_token %}
-        <div class='input-field col s12 l6'>
-                {{filter_form.genre1}}
-            <label>Genre 1</label>
-        </div>
-        <div class='input-field col s12 l6'>
-                {{filter_form.genre2}}
-            <label>Genre 2</label>
-        </div>
-        <div class='row'>
-            <p>WARNING: building maps without a genre to filter the artists will result in sluggish performance in densly populated regions.</p>
-        </div>
-        {% comment %} 
-
-        <div class='row'>
-            Big Map Mode
-            <div class='switch'>
-                <label>
-                Off
-                <input type='checkbox'>
-                <span class='lever'></span>
-                On
-                </label>
-            </div>
-        </div> 
-        
-        {% endcomment %}
-        <button class='btn red' type='submit' name='filter' id='options'>Save</button>
-    </form>
+    {% comment %} <div class='col s6'>
+    <p>
+        <label>
+        <input class='with-gap' name='mode' value='discovery' type='radio' />
+            <span style='color: white;'>Discovery Mode</span>
+        </label>
+    </p>
+    <p style='color: black;'>Filter artists by genre(s), music previews, less city stats</p>
+    </div>
+    <div class='col s6'>
+    <p>
+        <label>
+        <input class='with-gap' name='mode' value='insights' type='radio' />
+            <span style='color: white;'>Insights Mode</span>
+        </label>
+    </p>
+    <p style='color: black;'>No genre filter, no music previews, more city stats</p>
+    </div> {% endcomment %}
+    <button class='btn red' type='submit' name='filter' id='options'>Save</button>
 </div>
