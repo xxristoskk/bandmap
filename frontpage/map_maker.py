@@ -23,6 +23,7 @@ class MapMaker():
                 latest = artist['latest_release']
             except:
                 latest = None
+            print(artist['genres'])
             genres = [x for x in artist['genres'] if x not in artist['location'].split(', ')]
             if not genres:
                 genres = ['empty']

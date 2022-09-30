@@ -234,4 +234,15 @@ a {
 .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
     border-left-color: rgb(230, 107, 128) !important;
     opacity: .97;
+<<<<<<< HEAD
     }
+=======
+    }
+
+@media screen and (max-width: 640px) {
+    .popup-intro-content {
+        width: 400px;
+        height: 440px;
+    }
+}
+>>>>>>> 5feb87983550c18cd572e49c5bf0363153e872c0
