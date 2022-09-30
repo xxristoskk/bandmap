@@ -18,16 +18,11 @@ from spotify.models import SpotifyToken
 
 # initializing the database connection
 import pymongo
-<<<<<<< HEAD
-mongodb_pw = 'm0m0fuzzyface'
-mongodb_user = 'toast'
-=======
 import os
 
 mongodb_pw = os.environ['MONGO_PW']
 mongodb_user = os.environ['MONGO_USERS']
 
->>>>>>> 6f956aac26fade3298f4d5c118443af3c133050e
 client = pymongo.MongoClient(f'mongodb+srv://{mongodb_user}:{mongodb_pw}@bc01-muwwi.gcp.mongodb.net/test?retryWrites=true&w=majority')
 db = client.BC02
 coll = db.artistInfo
@@ -61,43 +56,6 @@ class NewLocation(APIView):
 def search_db(region, genres, loc_lookup):
 
     print(genres)
-<<<<<<< HEAD
-    genre1_artists = list(coll.find({
-                'latitude': {'$exists':True},
-                'location':{'$regex':f'({region})'},
-                'genres':genres[0]
-                }))
-    # genre2_artists = list(coll.find({
-    #             'latitude': {'$exists':True},
-    #             'location':{'$regex':f'({region})'},
-    #             'genres':genres[1]
-    #             }))
-
-
-    local_artists = genre1_artists
-    # if local_artists.count() < 10:
-    #     local_artists = list(local_artists)
-    #     try:
-    #         region = loc_lookup.raw['address']['state'].lower()
-    #         additional_artists = coll.find({
-    #             'latitude':{'$exists':True},
-    #             'location':{'$regex':f'({region.lower()})'},
-    #             'genres': {'$all':genres}
-    #             })
-    #     except:
-    #         region = loc_lookup.raw['address']['city'].lower()
-    #         additional_artists = coll.find({
-    #             'latitude':{'$exists':True},
-    #             'location':{'$regex':f'(, {region.lower()})'},
-    #             'genres': {'$all':genres}
-    #             })
-    #     if additional_artists.count() < 10:
-    #         pass
-    #     elif additional_artists.count() >= 10:
-    #         local_artists.extend(list(additional_artists))
-    # else:
-    return local_artists
-=======
     '''
     for multiple genre searches
     artists = []
@@ -143,7 +101,6 @@ def search_db(region, genres, loc_lookup):
     return artists
 
     
->>>>>>> 6f956aac26fade3298f4d5c118443af3c133050e
     
 # main map view
 class MapView(View):
@@ -165,13 +122,6 @@ class MapView(View):
                 
                 genres = data['genres']
                 
-<<<<<<< HEAD
-                if len(genres) > 1:
-                    user.genre1 = genres[0]['tag']
-                else:
-                    user.genre1 = genres[0]['tag']
-                
-=======
                 print(f'post response {genres}')
 
                 if not genres:
@@ -184,7 +134,6 @@ class MapView(View):
                     user.genre1 = genres[0]['tag']
                 
                 
->>>>>>> 6f956aac26fade3298f4d5c118443af3c133050e
                 print(f'settings location {data["location"]}')
 
                 if type(data['location']) == str:
@@ -197,11 +146,7 @@ class MapView(View):
                     user.latitude = data['location']['latitude']
                     user.longitude = data['location']['longitude']
 
-<<<<<<< HEAD
-                user.save(update_fields=['genre1', 'latitude', 'longitude'])
-=======
                 user.save(update_fields=['genre1', 'genre2', 'latitude', 'longitude'])
->>>>>>> 6f956aac26fade3298f4d5c118443af3c133050e
 
 
                 return HttpResponseRedirect('/')
@@ -287,19 +232,19 @@ class MapView(View):
                 print(f'region {region}')
 
             # search mongoDB for artists based on region and genres
-<<<<<<< HEAD
+# <<<<<<< HEAD
 
             genres = [user[0].genre1.lower()]
-=======
+# =======
             if not user[0].genre2:
                 genres = [user[0].genre1.lower()]
             else:
-<<<<<<< HEAD
+# <<<<<<< HEAD
                 genres = [user[0].genre1.lower(),user[0].genre2.lower()]
->>>>>>> 6f956aac26fade3298f4d5c118443af3c133050e
-=======
+# >>>>>>> 6f956aac26fade3298f4d5c118443af3c133050e
+# =======
                 genres = [user[0].genre1.lower()]
->>>>>>> 5feb87983550c18cd572e49c5bf0363153e872c0
+# >>>>>>> 5feb87983550c18cd572e49c5bf0363153e872c0
 
             local_artists = search_db(region, genres, loc_lookup)
         
