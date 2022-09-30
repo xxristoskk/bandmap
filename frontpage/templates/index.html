@@ -20,14 +20,14 @@
     }
     </style>
     {% csrf_token %}
-    
+
+    <div id='map-container'></div>
+
     <div id='modal1'>
         <div class='modal-content'>
             {% include 'includes/info.html' %}
         </div>
     </div>
-
-    <div id='map-container'></div>
 
     <div class='popup-success' id='success'>
         <div class='row center'>
