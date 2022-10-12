@@ -353,9 +353,10 @@ genres = [
   const autoOptions = {
     data: genre_data
   }
+
   document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('.modal');
-    var instances = M.Modal.init(elems, options);
+    var elems = document.querySelectorAll('.modal1');
+    var instances = M.Modal.init(elems, autoOptions);
   });
   
   document.addEventListener('DOMContentLoaded', function() {
@@ -368,10 +369,10 @@ genres = [
             placeholder: 'Enter a genre'})
     })
 
-  document.addEventListener('DOMContentLoaded', function() {
-    var elem = document.querySelector('.fixed-action-btn')
-    var instances = M.FloatingActionButton.init(elem)
-  })
+  // document.addEventListener('DOMContentLoaded', function() {
+  //   var elem = document.querySelector('.fixed-action-btn')
+  //   var instances = M.FloatingActionButton.init(elem)
+  // })
 
 // INITIALIZE LOCATION
 first_visit = JSON.parse(document.getElementById('first_visit').textContent)

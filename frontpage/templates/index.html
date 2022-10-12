@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <title>BandMap</title>
 </head>
+
 <body>
     <style>
     @font-face {
@@ -19,15 +20,17 @@
         src: url("{% static 'css/fonts/Megrim-Regular.ttf' %}");
     }
     </style>
+    
     {% csrf_token %}
 
     <div id='map-container'></div>
 
-    <div id='modal1'>
+    {% comment %} <div id='modal1'>
         <div class='modal-content'>
             {% include 'includes/info.html' %}
         </div>
-    </div>
+    </div> {% endcomment %}
+    
 
     <div class='popup-success' id='success'>
         <div class='row center'>
@@ -37,22 +40,7 @@
 
     <div class='popup-intro' id='intro'>
         <div class='popup-intro-content' id='intro' name='options'>
-            {% comment %} <div class='row center'>
-                <div class='col s12'>
 
-                {% if not first_visit %}
-
-                    <ul class='tabs tabs-fixed-width'>
-                        <li class='tab col s3'><a href='#welcome-tab' class='active'>Weclome</a></li>
-                        <li class='tab col s3'><a href='#info-tab'>Help</a></li>
-                        <li class='tab col s3'><a href='#options-tab'>Settings</a></li>
-                        <li class='tab col s3'><a href='#sources-tab'>Sources</a></li>
-                        <li class='tab col s3'><a href='#contact-tab'>Contact</a></li>
-                    </ul>
-
-                {% endif %}
-                </div>
-            </div> {% endcomment %}
             <div class='container' id='welcome-tab'>
                 <div class='row center'>
                     <header class='header'>
