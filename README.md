@@ -6,7 +6,7 @@ On BandMap, each circle represents a city. The more artists there are in the cit
 
 In the `Help` tab you will find more details on what the menu buttons do. Go to `Settings` to filter genres, and choose the style of the map.
 
-As of now, the app lives on [Heroku]('https://bandmap-v1.herokuapp.com/). It cannot be run locally since the database and Spotify Dev credetentials are not provided. If you'd like to become a contributor, feel free to reach out.
+As of now, the app cannot be accessed in production. It also cannot run locally since the database and Spotify Dev credetentials are not provided. If you'd like to become a contributor, or would like a demo, feel free to reach out. 
 
 ### Technical Details
 
