@@ -1,7 +1,7 @@
-import spotipy
+# import spotipy
 import time
-from bs4 import BeautifulSoup
-import requests
+# from bs4 import BeautifulSoup
+# import requests
 
 def break_up_albums(album_ids, sp):
     trax = []

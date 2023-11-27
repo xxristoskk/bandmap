@@ -394,6 +394,8 @@ if (first_visit) {
     }
 
     document.querySelector(".preload").classList.add('activate')
+    document.querySelector('.popup-intro').classList.remove('activate')
+    document.querySelector('popup-intro-content').classList.remove('activate')
 
     fetch('',{
       method: 'POST',
@@ -633,11 +635,13 @@ map.on('style.load', function() {
     /* CREATE SPOTIFY PLAYLIST */
     function successPlaylist() {
       document.querySelector('.popup-success').classList.add('activate')
+      document.querySelector(".preload").classList.remove('activate')
       setTimeout(function(){document.querySelector('.popup-success.activate').classList.remove('activate')}, 2000)
     }
 
     if (document.body.contains(document.querySelector('#createPlaylist'))) {
       document.getElementById('createPlaylist').addEventListener('click', function() {
+        document.querySelector(".preload").classList.add('activate')
         const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
         const data = {'artists': artists, 'city': selectedFeat.properties.city}
 
