@@ -19,7 +19,7 @@ client_id = os.environ['SP_ID']
 client_secret = os.environ['SP_SECRET']
 
 scope = 'playlist-modify-public'
-redirect_uri = 'https://bandmapv2.heroku.com/spotify/redirect'
+redirect_uri = 'https://bandmapv2.herokuapp.com/spotify/redirect'
 
 def validate_tokens(session_user):
     oauth = SpotifyOAuth(
