@@ -2,12 +2,8 @@
 
 ## A way to explore Bandcamp on a map
 
-On BandMap, each circle represents a city. The more artists there are in the city, the bigger the circle. Hovering over a city will let you know how many artists there are and which genres are most popular to make in that city (not based on listener habits).
-
-In the `Help` tab you will find more details on what the menu buttons do. Go to `Settings` to filter genres, and choose the style of the map.
-
-As of now, the app cannot be accessed in production. It also cannot run locally since the database and Spotify Dev credetentials are not provided. If you'd like to become a contributor, or would like a demo, feel free to reach out. 
+BandMap allows people to explore independent artists on a local level. They can search for artists in the genres they want to hear, and look for them in any location across the globe. Aside from previewing music on an artist's profile, users can create Spotify playlists featuring the top songs from the artists in a selected city. Whether someone is curious about what Techno sounds like in Egypt, someone visiting Toronto who wants to catch live local talent, or an independent artists looking to connect with similar artists in a region they want to perform in, Bandmap is useful for casual listeners, music enthusiasts, artists, and industry workers.
 
 ### Technical Details
 
-The artist data is on MongoDB and the ETL was built using the PyMongo wrapper. The `MapMaker` class is used to transform the data into a GeoJSON, which is then fetched using the API built with Django Rest Framework. The artists in a selected city are posted using the Django Rest Framework, and  `MakePlaylist` uses the Spotify API to build a playlist of those artists' top songs.
+The artist data is on MongoDB and the ETL was built using a script that scrapes artists from Bandcamp's artist index. The `MapMaker` class is used to transform the data into a GeoJSON, which is then fetched using the API built with Django Rest Framework. That GeoJSON is what populates the MapBox map. The Spotify API is used to search for the artists in the selected city, find their top tracks, and add them to a playlist that users authorize to make. That function isn't always successful; there are many artists on Bandcamp and on Spotify who share the same name, but I use the genres listed on Bandcamp to find ones that match.
