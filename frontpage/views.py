@@ -55,7 +55,7 @@ class NewLocation(APIView):
 ## MongoDB search
 def search_db(region, genres, loc_lookup):
 
-    print(genres)
+    print(f'GENRES: {genres}')
     '''
     for multiple genre searches
     artists = []
@@ -69,14 +69,14 @@ def search_db(region, genres, loc_lookup):
     return artists
     '''
     artists = []
-    for genre in genres:
+    # for genre in genres:
         # print(genre)
-        genre_artists = list(coll.find({
-            'latitude': {'$exists': True},
-            'location': {'$regex': f"({region})"},
-            'genres': {'$in': [genre]}
-        }))
-        artists.extend(genre_artists)
+    genre_artists = list(coll.find({
+        'latitude': {'$exists': True},
+        'location': {'$regex': f"({region})"},
+        'genres': {'$in': [genres]}
+    }))
+    artists.extend(genre_artists)
     return artists
 
     
