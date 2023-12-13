@@ -1,5 +1,8 @@
 # Welcome to [BandMap](https://bandmapv2.herokuapp.com/)
 
+### Update 12-13-23
+The Heroku app is currently offline, but should be back in January. Improving the UI is on top of the to-do list. Currently, I'm exploring different React interfaces that will be best fit for BandMap.
+
 ## A way to explore Bandcamp on a map
 
 BandMap allows people to explore independent artists on a local level. They can search for artists in the genres they want to hear, and look for them in any location across the globe. Aside from previewing music on an artist's profile, users can create Spotify playlists featuring the top songs from the artists in a selected city. Whether someone is curious about what Techno sounds like in Egypt, someone visiting Toronto who wants to catch live local talent, or an independent artists looking to connect with similar artists in a region they want to perform in, Bandmap is useful for casual listeners, music enthusiasts, artists, and industry workers.
