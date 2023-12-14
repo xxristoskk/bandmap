@@ -1,7 +1,10 @@
 # Welcome to [BandMap](https://bandmapv2.herokuapp.com/)
 
-### Update 12-13-23
-The Heroku app is currently offline, but should be back in January. Improving the UI is on top of the to-do list. Currently, I'm exploring different React interfaces that will be best fit for BandMap.
+### Update 12-14-23 to-do list
+- Improve UI with React framework
+- Allow for multiple genres to be queried by creating an array model
+- Break up map.js into smaller javascript files
+- Create a button to toggle between light and dark modes
 
 ## A way to explore Bandcamp on a map
 
